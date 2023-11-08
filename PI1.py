@@ -1,6 +1,7 @@
 import threading
 from settings.settings import load_settings_pi1
 from components.dht import run_dht
+from components.uds import run_uds
 import time
 
 try:
@@ -16,10 +17,12 @@ if __name__ == "__main__":
     threads = []
     stop_event = threading.Event()
     try:
-        rdh1_settings = settings_pi1['RDH1']
-        rdh2_settings = settings_pi1['RDH2']
-        run_dht(rdh1_settings, threads, stop_event)
-        run_dht(rdh2_settings, threads, stop_event)
+        # rdh1_settings = settings_pi1['RDH1']
+        # rdh2_settings = settings_pi1['RDH2']
+        dus1_settings = settings_pi1['DUS1']
+        # run_dht(rdh1_settings, threads, stop_event)
+        # run_dht(rdh2_settings, threads, stop_event)
+        run_uds(dus1_settings, threads, stop_event)
         while True:
             time.sleep(1)
 

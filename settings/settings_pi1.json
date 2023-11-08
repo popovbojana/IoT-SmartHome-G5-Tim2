@@ -8,5 +8,11 @@
     "name": "RDH2",
     "simulated": true,
     "pin": 6
+  },
+  "DUS1": {
+    "name": "DUS1",
+    "simulated": true,
+    "trig_pin": 15,
+    "echo_pin": 14
   }
 }
