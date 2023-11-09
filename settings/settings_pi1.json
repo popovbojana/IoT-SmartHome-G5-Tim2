@@ -1,15 +1,17 @@
 {
-  "RDH1": {
-    "name": "RDH1",
-    "simulated": true,
-    "pin": 26
-  },
-  "RDH2": {
-    "name": "RDH2",
-    "simulated": true,
-    "pin": 6
-  },
-  "DUS1": {
+  "Room DHT":[
+    {
+      "name": "RDH1",
+      "simulated": true,
+      "pin": 26
+    },
+    {
+      "name": "RDH2",
+      "simulated": true,
+      "pin": 6
+    }
+  ],
+  "Door Ultrasonic Sensor": {
     "name": "DUS1",
     "simulated": true,
     "trig_pin": 15,
