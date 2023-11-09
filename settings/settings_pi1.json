@@ -33,5 +33,10 @@
       "simulated": true,
       "pin": 27
     }
-  ]
+  ],
+  "Door Sensor": {
+      "name": "DS1",
+      "simulated": true,
+      "pin": 23
+  }
 }

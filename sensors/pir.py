@@ -7,7 +7,6 @@ class PIR:
         self.name = name
         self.pin = pin
         self.detected_motion = False
-        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.motion_detected)
         GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.no_motion)
