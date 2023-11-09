@@ -2,6 +2,7 @@ from simulations.dht import run_dht_simulator
 import threading
 import time
 
+
 def dht_callback(humidity, temperature, code, name):
     t = time.localtime()
     print("*"*5 + name + "*"*5)

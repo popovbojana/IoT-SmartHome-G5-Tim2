@@ -49,5 +49,10 @@
       "name": "DL",
       "simulated": true,
       "pin": 18
+  },
+    "Door Buzzer": {
+      "name": "DB",
+      "simulated": true,
+      "pin": 17
   }
 }

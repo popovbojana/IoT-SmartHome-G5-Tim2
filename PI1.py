@@ -6,6 +6,7 @@ from components.pir import run_pir
 from components.button import run_button
 from components.dms import run_dms
 from components.diode import run_diode
+from components.buzzer import run_buzzer
 
 import time
 
@@ -30,7 +31,8 @@ if __name__ == "__main__":
         # rpir2_settings = settings_pi1['Room PIR'][1]
         # ds1_settings = settings_pi1["Door Sensor"]
         # dms_settings = settings_pi1["Door Membrane Switch"]
-        dl_settings = settings_pi1["Door Light"]
+        # dl_settings = settings_pi1["Door Light"]
+        db_settings = settings_pi1["Door Buzzer"]
 
         # run_dht(rdh1_settings, threads, stop_event)
         # run_dht(rdh2_settings, threads, stop_event)
@@ -40,7 +42,8 @@ if __name__ == "__main__":
         # run_pir(rpir2_settings, threads, stop_event)
         # run_button(ds1_settings, threads, stop_event)
         # run_dms(dms_settings, threads, stop_event)
-        run_diode(dl_settings, threads, stop_event)
+        # run_diode(dl_settings, threads, stop_event)
+        run_buzzer(db_settings, threads, stop_event)
 
         while True:
             time.sleep(1)
