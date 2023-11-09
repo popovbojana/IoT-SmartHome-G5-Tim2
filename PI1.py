@@ -2,6 +2,7 @@ import threading
 from settings.settings import load_settings_pi1
 from components.dht import run_dht
 from components.uds import run_uds
+from components.pir import run_pir
 import time
 
 try:
@@ -17,12 +18,19 @@ if __name__ == "__main__":
     threads = []
     stop_event = threading.Event()
     try:
-        rdh1_settings = settings_pi1['Room DHT'][0]
-        rdh2_settings = settings_pi1['Room DHT'][1]
-        dus1_settings = settings_pi1['Door Ultrasonic Sensor']
-        run_dht(rdh1_settings, threads, stop_event)
-        run_dht(rdh2_settings, threads, stop_event)
-        run_uds(dus1_settings, threads, stop_event)
+        # rdh1_settings = settings_pi1['Room DHT'][0]
+        # rdh2_settings = settings_pi1['Room DHT'][1]
+        # dus1_settings = settings_pi1['Door Ultrasonic Sensor']
+        dpir1_settings = settings_pi1['Door Motion Sensor']
+        rpir1_settings = settings_pi1['Room PIR'][0]
+        rpir2_settings = settings_pi1['Room PIR'][1]
+
+        # run_dht(rdh1_settings, threads, stop_event)
+        # run_dht(rdh2_settings, threads, stop_event)
+        # run_uds(dus1_settings, threads, stop_event)
+        run_pir(dpir1_settings, threads, stop_event)
+        run_pir(rpir1_settings, threads, stop_event)
+        run_pir(rpir2_settings, threads, stop_event)
         while True:
             time.sleep(1)
 

@@ -16,5 +16,22 @@
     "simulated": true,
     "trig_pin": 15,
     "echo_pin": 14
-  }
+  },
+  "Door Motion Sensor": {
+    "name": "DPIR1",
+    "simulated": true,
+    "pin": 17
+  },
+  "Room PIR": [
+    {
+      "name": "RPIR1",
+      "simulated": true,
+      "pin": 22
+    },
+    {
+      "name": "RPIR2",
+      "simulated": true,
+      "pin": 27
+    }
+  ]
 }
