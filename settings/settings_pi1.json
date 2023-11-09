@@ -38,5 +38,11 @@
       "name": "DS1",
       "simulated": true,
       "pin": 23
+  },
+  "Door Membrane Switch": {
+      "name": "DMS",
+      "simulated": true,
+      "row_pins": [25, 8, 7, 1],
+      "column_pins": [12, 16, 20, 21]
   }
 }

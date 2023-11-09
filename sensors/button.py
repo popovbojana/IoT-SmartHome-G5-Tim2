@@ -29,19 +29,3 @@ def run_button_loop(button, delay, callback, stop_event):
         if stop_event.is_set():
             break
         time.sleep(delay)
-
-# Primjer korištenja klase DoorSensor
-if __name__ == "__main__":
-    door_sensor = DoorSensor("DS1", 4)  # Inicijalizacija Door Sensora s pinom 4
-
-    def door_callback(status, code, name):
-        print(f"Door Status: {status} - {name}")
-
-    stop_event = threading.Event()  # Event za zaustavljanje petlje
-    door_sensor_thread = threading.Thread(target=run_door_sensor_loop, args=(door_sensor, 1, door_callback, stop_event))
-    door_sensor_thread.start()
-
-    # Ovdje može biti ostatak vašeg programa ili petlja koja završava petlju samo ako je potrebno
-
-    stop_event.set()  # Postavljanje eventa za zaustavljanje petlje
-    door_sensor_thread.join()  # Čekanje da se petlja završi
