@@ -18,9 +18,10 @@ def run_uds(settings, threads, stop_event):
             threads.append(uds1_thread)
             print(f"{settings['name']} simulator started")
         else:
-            from sensors.uds import get_distance
+            from sensors.uds import run_uds_loop, UDS
             print(f"Starting {settings['name']} loop")
-            dht1_thread = threading.Thread(target=get_distance, args=())
-            dht1_thread.start()
-            threads.append(dht1_thread)
+            uds = UDS(settings['name'], settings['trig_pin'], settings['echo_pin'])
+            uds_thread = threading.Thread(target=run_uds_loop, args=(uds, 2, uds_callback, stop_event))
+            uds_thread.start()
+            threads.append(uds_thread)
             print(f"{settings['name']} loop started")
