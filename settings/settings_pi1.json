@@ -44,5 +44,10 @@
       "simulated": true,
       "row_pins": [25, 8, 7, 1],
       "column_pins": [12, 16, 20, 21]
+  },
+    "Door Light": {
+      "name": "DL",
+      "simulated": true,
+      "pin": 18
   }
 }
