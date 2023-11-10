@@ -8,3 +8,4 @@ def load_settings_pi1(filePath='settings/settings_pi1.json'):
 
 
 print_lock = threading.Lock()
+print_lock2 = threading.Lock()

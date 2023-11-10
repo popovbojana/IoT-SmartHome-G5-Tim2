@@ -7,6 +7,7 @@ from components.button import run_button
 from components.dms import run_dms
 from components.diode import run_diode
 from components.buzzer import run_buzzer
+from settings.settings import print_lock
 
 import time
 
@@ -17,33 +18,72 @@ except:
     pass
 
 
+def run_sensors(settings_pi1, threads, stop_event):
+    rdh1_settings = settings_pi1['Room DHT'][0]
+    rdh2_settings = settings_pi1['Room DHT'][1]
+    dus1_settings = settings_pi1['Door Ultrasonic Sensor']
+    dpir1_settings = settings_pi1['Door Motion Sensor']
+    rpir1_settings = settings_pi1['Room PIR'][0]
+    rpir2_settings = settings_pi1['Room PIR'][1]
+    ds1_settings = settings_pi1["Door Sensor"]
+    dms_settings = settings_pi1["Door Membrane Switch"]
+
+    run_dht(rdh1_settings, threads, stop_event)
+    run_dht(rdh2_settings, threads, stop_event)
+    run_uds(dus1_settings, threads, stop_event)
+    run_pir(dpir1_settings, threads, stop_event)
+    run_pir(rpir1_settings, threads, stop_event)
+    run_pir(rpir2_settings, threads, stop_event)
+    run_button(ds1_settings, threads, stop_event)
+    run_dms(dms_settings, threads, stop_event)
+
+
+def run_actuators(settings_pi1, threads, stop_event):
+    thread = threading.Thread(target = menu_actuators, args=(settings_pi1, threads, stop_event,))
+    thread.start()
+    threads.append(thread)
+
+
+def menu_actuators(settings_pi1, threads, stop_event):
+    while not stop_event.is_set():
+        print()
+        option = input("Enter X/x to start actuator menu: ")
+        if option.capitalize() == "X":
+            while True:
+                with print_lock:
+                    print()
+                    print("**** ACTUATOR MENU ****")
+                    print("1) Enter 1 to change light state \n"
+                          "2) Enter 2 to buzz\n"
+                          "3) Enter 3 to exit\n")
+                    option = input("Enter: ")
+                    if option == "1":
+                        dl_settings = settings_pi1["Door Light"]
+                        run_diode(dl_settings, threads, stop_event)
+                        time.sleep(1)
+                    elif option == "2":
+                        db_settings = settings_pi1["Door Buzzer"]
+                        duration = input("Enter duration: ")
+                        run_buzzer(db_settings, threads, stop_event, duration)
+                        time.sleep(int(duration))
+                    elif option == "3":
+                        print("Exiting the menu. Printing is resumed.")
+                        break
+
+                    else:
+                        print("Entered wrong number, try again :)")
+        else:
+            pass
+
+
 if __name__ == "__main__":
     print('Starting PI1...')
     settings_pi1 = load_settings_pi1()
     threads = []
     stop_event = threading.Event()
     try:
-        rdh1_settings = settings_pi1['Room DHT'][0]
-        rdh2_settings = settings_pi1['Room DHT'][1]
-        dus1_settings = settings_pi1['Door Ultrasonic Sensor']
-        dpir1_settings = settings_pi1['Door Motion Sensor']
-        rpir1_settings = settings_pi1['Room PIR'][0]
-        rpir2_settings = settings_pi1['Room PIR'][1]
-        ds1_settings = settings_pi1["Door Sensor"]
-        dms_settings = settings_pi1["Door Membrane Switch"]
-        dl_settings = settings_pi1["Door Light"]
-        db_settings = settings_pi1["Door Buzzer"]
-
-        run_dht(rdh1_settings, threads, stop_event)
-        run_dht(rdh2_settings, threads, stop_event)
-        run_uds(dus1_settings, threads, stop_event)
-        run_pir(dpir1_settings, threads, stop_event)
-        run_pir(rpir1_settings, threads, stop_event)
-        run_pir(rpir2_settings, threads, stop_event)
-        run_button(ds1_settings, threads, stop_event)
-        run_dms(dms_settings, threads, stop_event)
-        run_diode(dl_settings, threads, stop_event)
-        run_buzzer(db_settings, threads, stop_event)
+        run_sensors(settings_pi1, threads, stop_event)
+        run_actuators(settings_pi1, threads, stop_event)
 
         while True:
             time.sleep(1)

@@ -4,14 +4,12 @@
     <list default="true" id="da2fa6c7-5049-46d0-88ee-47a54b8ba1bc" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PI1.py" beforeDir="false" afterPath="$PROJECT_DIR$/PI1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/button.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/button.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/buzzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/buzzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dht.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/dht.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/diode.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/diode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dms.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/dms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/pir.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/pir.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/uds.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/uds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensors/buzzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/actuators/buzzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensors/diode.py" beforeDir="false" afterPath="$PROJECT_DIR$/actuators/diode.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulations/diode.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +49,11 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\filip\Documents\GitHub\IoT-SmartHome-G5-Tim2\actuators" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name="PI1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -109,6 +112,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/IoT_SmartHome_G5_Tim2$PI1.coverage" NAME="PI1 Coverage Results" MODIFIED="1699638458553" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/IoT_SmartHome_G5_Tim2$PI1.coverage" NAME="PI1 Coverage Results" MODIFIED="1699641946911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
