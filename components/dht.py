@@ -1,15 +1,18 @@
 from simulations.dht import run_dht_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def dht_callback(humidity, temperature, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Humidity: {humidity}%")
-    print(f"Temperature: {temperature}°C")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"Humidity: {humidity}%")
+        print(f"Temperature: {temperature}°C")
 
 
 def run_dht(settings, threads, stop_event):

@@ -1,14 +1,17 @@
 from simulations.pir import run_pir_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def pir_callback(motion, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"{motion}")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"{motion}")
 
 
 def run_pir(settings, threads, stop_event):

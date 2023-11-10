@@ -1,14 +1,17 @@
 from simulations.button import run_button_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def button_callback(pushed, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"{pushed}")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"{pushed}")
 
 
 def run_button(settings, threads, stop_event):

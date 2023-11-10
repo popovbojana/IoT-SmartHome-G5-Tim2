@@ -1,14 +1,17 @@
 from simulations.dms import run_dms_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def dms_callback(key, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Key: {key}")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"Key: {key}")
 
 
 def run_dms(settings, threads, stop_event):

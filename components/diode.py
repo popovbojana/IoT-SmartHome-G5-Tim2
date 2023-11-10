@@ -1,14 +1,17 @@
 from simulations.diode import run_diode_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def diode_callback(on, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"{on}")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"{on}")
 
 
 def run_diode(settings, threads, stop_event):

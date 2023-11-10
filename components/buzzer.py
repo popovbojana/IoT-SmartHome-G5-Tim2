@@ -1,16 +1,19 @@
 from simulations.buzzer import run_buzzer_simulator
 import threading
 import time
+from settings.settings import print_lock
 
 
 def buzzer_callback(buzz, pitch, duration, code, name):
-    t = time.localtime()
-    print("*"*5 + name + "*"*5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Pitch: {pitch}")
-    print(f"Duration: {duration} sec")
-    print(f"{buzz}")
+    with print_lock:
+        t = time.localtime()
+        print()
+        print("*" * 5 + name + "*" * 5)
+        print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+        print(f"Code: {code}")
+        print(f"Pitch: {pitch}")
+        print(f"Duration: {duration} sec")
+        print(f"{buzz}")
 
 
 def run_buzzer(settings, threads, stop_event):
