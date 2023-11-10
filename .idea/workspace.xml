@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da2fa6c7-5049-46d0-88ee-47a54b8ba1bc" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/components/buzzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sensors/buzzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/simulations/buzzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PI1.py" beforeDir="false" afterPath="$PROJECT_DIR$/PI1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/dht.py" beforeDir="false" afterPath="$PROJECT_DIR$/components/dht.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/settings_pi1.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/settings_pi1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensors/buzzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/sensors/buzzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sensors/diode.py" beforeDir="false" afterPath="$PROJECT_DIR$/sensors/diode.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,6 +28,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2Xudgr4EOou4uLFCikxkwllu0FG" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -43,6 +41,8 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
   </component>
   <component name="RunManager">
     <configuration name="PI1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -82,6 +82,7 @@
       <option name="presentableId" value="Default" />
       <updated>1699483012815</updated>
       <workItem from="1699483014049" duration="2000" />
+      <workItem from="1699634537569" duration="642000" />
     </task>
     <servers />
   </component>

@@ -7,7 +7,6 @@ class DIODE:
     def __init__(self, name, pin):
         self.name = name
         self.pin = pin
-        self.bright = False
         GPIO.setup(self.pin, GPIO.OUT)
 
     def turnOn(self):
@@ -17,9 +16,10 @@ class DIODE:
         GPIO.setup(self.pin, GPIO.LOW)
 
 
-def run_diode_loop(diode, delay, callback, stop_event, cancel):
-    while cancel != 'cancel':
-        on_off = input("Turn on or off the diode")
+def run_diode_loop(diode, delay, callback, stop_event):
+    on_off = ''
+    while on_off != 'cancel':
+        on_off = input("Enter on/off to turn on/off the diode or cancel to exit: ")
         if on_off == 'on':
             diode.turnOn()
             callback("Lights are on", "DIODE_ON", diode.name)

@@ -22,12 +22,13 @@ class BUZZER:
 
 
 def run_buzzer_loop(buzzer, delay, callback, stop_event):
-    while True:
-        pitch = 440
-        duration = 0.1
-        buzzer.buzz(pitch, duration)
-        callback("BUZZZzz", pitch, duration, "BUZZER_OK", buzzer.name)
-
+    pitch = 440
+    on_off = ''
+    while on_off != 'cancel':
+        duration = input("Enter duration of the buzz to start or cancel to exit: ")
+        if duration.isnumeric():
+            buzzer.buzz(pitch, duration)
+            callback("BUZZZzz", pitch, duration, "BUZZER_OK", buzzer.name)
         if stop_event.is_set():
             break
         time.sleep(delay)
