@@ -7,6 +7,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+uds_batch = []
 
 
 def uds_callback(distance, code, settings):
@@ -25,8 +27,12 @@ def uds_callback(distance, code, settings):
             "timestamp": time.strftime('%H:%M:%S', t),
             "distance": distance
         }
+        uds_batch.append(message)
 
-        mqtt_publish.single(f"uds", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(uds_batch) == batch_size:
+            msgs = [{"topic": "uds", "payload": json.dumps(msg)} for msg in uds_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            uds_batch.clear()
 
 
 def run_uds(settings, threads, stop_event):

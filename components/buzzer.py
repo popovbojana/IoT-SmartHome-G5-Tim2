@@ -6,6 +6,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+buzzer_batch = []
 
 
 def buzzer_callback(duration, code, settings):
@@ -27,8 +29,12 @@ def buzzer_callback(duration, code, settings):
             "pitch": pitch,
             "duration": duration
         }
+        buzzer_batch.append(message)
 
-        mqtt_publish.single(f"buzzer", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(buzzer_batch) == batch_size:
+            msgs = [{"topic": "buzzer", "payload": json.dumps(msg)} for msg in buzzer_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            buzzer_batch.clear()
 
 
 def run_buzzer(settings, threads, stop_event, duration):

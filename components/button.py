@@ -7,6 +7,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+button_batch = []
 
 
 def button_callback(pushed, unlocked, code, settings):
@@ -25,8 +27,12 @@ def button_callback(pushed, unlocked, code, settings):
             "timestamp": time.strftime('%H:%M:%S', t),
             "door_unlocked": unlocked
         }
+        button_batch.append(message)
 
-        mqtt_publish.single(f"button", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(button_batch) == batch_size:
+            msgs = [{"topic": "button", "payload": json.dumps(msg)} for msg in button_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            button_batch.clear()
 
 
 def run_button(settings, threads, stop_event):

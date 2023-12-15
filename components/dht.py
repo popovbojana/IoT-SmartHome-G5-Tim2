@@ -7,6 +7,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+dht_batch = []
 
 
 def dht_callback(humidity, temperature, code, settings):
@@ -27,8 +29,12 @@ def dht_callback(humidity, temperature, code, settings):
             "humidity": humidity,
             "temperature": temperature
         }
+        dht_batch.append(message)
 
-        mqtt_publish.single(f"dht", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(dht_batch) == batch_size:
+            msgs = [{"topic": "dht", "payload": json.dumps(msg)} for msg in dht_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            dht_batch.clear()
 
 
 def run_dht(settings, threads, stop_event):

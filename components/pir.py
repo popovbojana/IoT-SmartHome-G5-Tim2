@@ -7,6 +7,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+pir_batch = []
 
 
 def pir_callback(motion, detected, code, settings):
@@ -25,8 +27,12 @@ def pir_callback(motion, detected, code, settings):
             "timestamp": time.strftime('%H:%M:%S', t),
             "motion_detected": detected
         }
+        pir_batch.append(message)
 
-        mqtt_publish.single(f"pir", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(pir_batch) == batch_size:
+            msgs = [{"topic": "pir", "payload": json.dumps(msg)} for msg in pir_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            pir_batch.clear()
 
 
 def run_pir(settings, threads, stop_event):

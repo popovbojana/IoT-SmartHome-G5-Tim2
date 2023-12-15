@@ -7,6 +7,8 @@ import json
 
 mqtt_host = "localhost"
 mqtt_port = 1883
+batch_size = 5
+dms_batch = []
 
 
 def dms_callback(key, code, settings):
@@ -25,9 +27,12 @@ def dms_callback(key, code, settings):
             "timestamp": time.strftime('%H:%M:%S', t),
             "key": key
         }
+        dms_batch.append(message)
 
-        mqtt_publish.single(f"dms", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
-
+        if len(dms_batch) == batch_size:
+            msgs = [{"topic": "dms", "payload": json.dumps(msg)} for msg in dms_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            dms_batch.clear()
 
 
 def run_dms(settings, threads, stop_event):

@@ -7,6 +7,8 @@ import json
 mqtt_host = "localhost"
 mqtt_port = 1883
 state = False
+batch_size = 5
+diode_batch = []
 
 
 def diode_callback(code, settings):
@@ -31,8 +33,12 @@ def diode_callback(code, settings):
             "timestamp": time.strftime('%H:%M:%S', t),
             "light_on": state,
         }
+        diode_batch.append(message)
 
-        mqtt_publish.single(f"diode", json.dumps(message), hostname=mqtt_host, port=mqtt_port)
+        if len(diode_batch) == batch_size:
+            msgs = [{"topic": "diode", "payload": json.dumps(msg)} for msg in diode_batch]
+            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            diode_batch.clear()
 
 
 def run_diode(settings, threads, stop_event):
