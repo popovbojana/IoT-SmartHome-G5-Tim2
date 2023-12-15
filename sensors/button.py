@@ -23,9 +23,9 @@ class Button:
 def run_button_loop(button, delay, callback, stop_event):
     while True:
         if button.read_state():
-            callback("Door is unlocked", "BUTTON_OK", button.name)
+            callback("Door is unlocked", True, "BUTTON_OK", button.name)
         else:
-            callback("Door is locked", "BUTTON_OK", button.name)
+            callback("Door is locked", False, "BUTTON_OK", button.name)
         if stop_event.is_set():
             break
         time.sleep(delay)

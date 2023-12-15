@@ -1,7 +1,7 @@
 from simulations.dht import run_dht_simulator
 import threading
 import time
-from settings.settings import print_lock
+from settings.settings import print_lock, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
 
@@ -33,7 +33,9 @@ def dht_callback(humidity, temperature, code, settings):
 
         if len(dht_batch) == batch_size:
             msgs = [{"topic": "dht", "payload": json.dumps(msg)} for msg in dht_batch]
-            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            mqtt_config = load_mqtt_config()
+            mqtt_publish.multiple(msgs, hostname=mqtt_config['host'], port=mqtt_config['port'],
+                                  auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
             dht_batch.clear()
 
 

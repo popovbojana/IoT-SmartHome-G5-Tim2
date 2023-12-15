@@ -1,7 +1,7 @@
 from simulations.pir import run_pir_simulator
 import threading
 import time
-from settings.settings import print_lock
+from settings.settings import print_lock, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
 
@@ -31,7 +31,9 @@ def pir_callback(motion, detected, code, settings):
 
         if len(pir_batch) == batch_size:
             msgs = [{"topic": "pir", "payload": json.dumps(msg)} for msg in pir_batch]
-            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            mqtt_config = load_mqtt_config()
+            mqtt_publish.multiple(msgs, hostname=mqtt_config['host'], port=mqtt_config['port'],
+                                  auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
             pir_batch.clear()
 
 

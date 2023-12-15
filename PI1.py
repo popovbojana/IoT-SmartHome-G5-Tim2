@@ -1,5 +1,5 @@
 import threading
-from settings.settings import load_settings_pi1
+from settings.settings import load_settings
 from components.dht import run_dht
 from components.uds import run_uds
 from components.pir import run_pir
@@ -78,12 +78,12 @@ def menu_actuators(settings_pi1, threads, stop_event):
 
 if __name__ == "__main__":
     print('Starting PI1...')
-    settings_pi1 = load_settings_pi1()
+    settings = load_settings()
     threads = []
     stop_event = threading.Event()
     try:
-        run_sensors(settings_pi1, threads, stop_event)
-        run_actuators(settings_pi1, threads, stop_event)
+        run_sensors(settings, threads, stop_event)
+        run_actuators(settings, threads, stop_event)
 
         while True:
             time.sleep(1)
