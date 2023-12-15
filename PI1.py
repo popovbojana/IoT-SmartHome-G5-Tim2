@@ -18,15 +18,15 @@ except:
     pass
 
 
-def run_sensors(settings_pi1, threads, stop_event):
-    rdh1_settings = settings_pi1['Room DHT'][0]
-    rdh2_settings = settings_pi1['Room DHT'][1]
-    dus1_settings = settings_pi1['Door Ultrasonic Sensor']
-    dpir1_settings = settings_pi1['Door Motion Sensor']
-    rpir1_settings = settings_pi1['Room PIR'][0]
-    rpir2_settings = settings_pi1['Room PIR'][1]
-    ds1_settings = settings_pi1["Door Sensor"]
-    dms_settings = settings_pi1["Door Membrane Switch"]
+def run_sensors(settings, threads, stop_event):
+    rdh1_settings = settings['Room DHT'][0]
+    rdh2_settings = settings['Room DHT'][1]
+    dus1_settings = settings['Door Ultrasonic Sensor'][0]
+    dpir1_settings = settings['Door Motion Sensor'][0]
+    rpir1_settings = settings['Room PIR'][0]
+    rpir2_settings = settings['Room PIR'][1]
+    ds1_settings = settings['Door Sensor'][0]
+    dms_settings = settings['Door Membrane Switch'][0]
 
     run_dht(rdh1_settings, threads, stop_event)
     run_dht(rdh2_settings, threads, stop_event)
@@ -58,11 +58,11 @@ def menu_actuators(settings_pi1, threads, stop_event):
                           "3) Enter 3 to exit\n")
                     option = input("Enter: ")
                     if option == "1":
-                        dl_settings = settings_pi1["Door Light"]
+                        dl_settings = settings_pi1['Door Light'][0]
                         run_diode(dl_settings, threads, stop_event)
                         time.sleep(1)
                     elif option == "2":
-                        db_settings = settings_pi1["Door Buzzer"]
+                        db_settings = settings_pi1['Door Buzzer'][0]
                         duration = input("Enter duration: ")
                         run_buzzer(db_settings, threads, stop_event, duration)
                         time.sleep(int(duration))
