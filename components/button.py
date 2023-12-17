@@ -4,9 +4,8 @@ import time
 from settings.settings import print_lock
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.settings import load_mqtt_config
 
-mqtt_host = "localhost"
-mqtt_port = 1883
 batch_size = 5
 button_batch = []
 
@@ -31,7 +30,9 @@ def button_callback(pushed, unlocked, code, settings):
 
         if len(button_batch) == batch_size:
             msgs = [{"topic": "button", "payload": json.dumps(msg)} for msg in button_batch]
-            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            mqtt_config = load_mqtt_config()
+            mqtt_publish.multiple(msgs, hostname=mqtt_config['host'], port=mqtt_config['port'],
+                                  auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
             button_batch.clear()
 
 

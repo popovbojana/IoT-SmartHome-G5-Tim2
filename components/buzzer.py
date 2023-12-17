@@ -1,6 +1,6 @@
 import threading
 import time
-from settings.settings import print_lock2
+from settings.settings import print_lock2, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
 
@@ -33,7 +33,9 @@ def buzzer_callback(duration, code, settings):
 
         if len(buzzer_batch) == batch_size:
             msgs = [{"topic": "buzzer", "payload": json.dumps(msg)} for msg in buzzer_batch]
-            mqtt_publish.multiple(msgs, hostname=mqtt_host, port=mqtt_port)
+            mqtt_config = load_mqtt_config()
+            mqtt_publish.multiple(msgs, hostname=mqtt_config['host'], port=mqtt_config['port'],
+                                  auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
             buzzer_batch.clear()
 
 

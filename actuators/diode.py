@@ -22,10 +22,10 @@ def run_diode_loop(diode, delay, callback, stop_event):
         on_off = input("Enter on/off to turn on/off the diode or cancel to exit: ")
         if on_off == 'on':
             diode.turnOn()
-            callback("Light are on", "DIODE_OK", diode.name)
+            callback("Light are on", True, "DIODE_OK", diode.name)
         elif on_off == 'off':
             diode.turnOff()
-            callback("Light are off", "DIODE_OK", diode.name)
+            callback("Light are off", False, "DIODE_OK", diode.name)
         if stop_event.is_set():
             break
         time.sleep(delay)
