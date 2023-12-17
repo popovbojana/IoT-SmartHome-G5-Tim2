@@ -5,6 +5,7 @@ import time
 import random
 import threading
 
+from model.uds import Uds
 
 app = Flask(__name__)
 
@@ -35,6 +36,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     payload = json.loads(msg.payload.decode())
     print(f"Received message: {payload}")
+
+    if msg.topic == "uds":
+        print("AAAAAAAAAAAAAAAAAAAAa")
+        timestamp = time.time()
+        dus_sensor = Uds(timestamp, payload["pi"], payload["name"], payload["simulated"], payload["distance"])
+        dus_sensor.save_to_influxdb()
 
 
 def mqtt_subscribe():

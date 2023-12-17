@@ -1,7 +1,9 @@
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
-class Dus:
+from influxdb_client import Point, WritePrecision
+
+class Uds:
     def __init__(self, timestamp, pi, name, simulated, distance):
         self.timestamp = timestamp
         self.pi = pi
@@ -11,14 +13,18 @@ class Dus:
 
     def save_to_influxdb(self):
 
-        point = Point("dus_data").time(self.timestamp, WritePrecision.S)
+        # Konvertujte timestamp u sekunde (int)
+        timestamp_seconds = int(self.timestamp)
+
+        point = Point(self.name).time(timestamp_seconds, WritePrecision.S)
         point.field("pi", self.pi)
         point.field("name", self.name)
         point.field("simulated", self.simulated)
-        point.field("distance", self.distance)
+        point.field("distance", float(self.distance))
 
         write_api = client.write_api(write_options=SYNCHRONOUS)
         write_api.write(bucket="iot", org="nwt", record=point)
+
 
 # Konfiguracija InfluxDB klijenta
 config = {
