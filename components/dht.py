@@ -25,9 +25,9 @@ def dht_callback(humidity, temperature, code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
-            "humidity": humidity,
-            "temperature": temperature
+            "timestamp": time.time(),
+            "humidity": float(humidity),
+            "temperature": float(temperature)
         }
         dht_batch.append(message)
 

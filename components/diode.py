@@ -19,6 +19,7 @@ def diode_callback(code, settings):
         print("*" * 5 + settings['name'] + "*" * 5)
         print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
         print(f"Code: {code}")
+
         if state:
             state = True
             print("Light is on\n")
@@ -30,7 +31,7 @@ def diode_callback(code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
+            "timestamp": time.time(),
             "light_on": state,
         }
         diode_batch.append(message)

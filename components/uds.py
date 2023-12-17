@@ -24,8 +24,8 @@ def uds_callback(distance, code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
-            "distance": distance
+            "timestamp": time.time(),
+            "distance": float(distance)
         }
         uds_batch.append(message)
 

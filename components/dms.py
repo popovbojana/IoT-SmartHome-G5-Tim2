@@ -24,7 +24,7 @@ def dms_callback(key, code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
+            "timestamp": time.time(),
             "key": key
         }
         dms_batch.append(message)

@@ -24,7 +24,7 @@ def pir_callback(motion, detected, code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
+            "timestamp": time.time(),
             "motion_detected": detected
         }
         pir_batch.append(message)

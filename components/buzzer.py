@@ -25,9 +25,9 @@ def buzzer_callback(duration, code, settings):
             "pi": "PI1",
             "name": settings['name'],
             "simulated": settings['simulated'],
-            "timestamp": time.strftime('%H:%M:%S', t),
-            "pitch": pitch,
-            "duration": duration
+            "timestamp": time.time(),
+            "pitch": float(pitch),
+            "duration": float(duration)
         }
         buzzer_batch.append(message)
 
