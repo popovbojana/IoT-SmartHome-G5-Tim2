@@ -98,7 +98,7 @@ config = {
         "port": 8086,
         "organization": "nwt",
         "bucket": "measurements",
-        "token": "RvNuFi6feoqRplXfeScO8c8UJeA366xepg9RinlRH-sKIBBsqacrFEeuQ6jD2Ai4XBZ-VmSDqYX2usL2yIRf3g=="
+        "token": "mvuvk4gZwyQ1cSV66lq40FDDg9MCnNpvRwNpbZMFgP-o3Y_QZ__gKEhAXRDP2KSh6Hl7dRINf17NpwKwfpYn3g=="
     }
 }
 
