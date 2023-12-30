@@ -1,0 +1,66 @@
+{
+  "Door Sensor": [
+    {
+      "pi": "PI2",
+      "name": "DS2",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Door Ultrasonic Sensor": [
+    {
+      "pi": "PI2",
+      "name": "DUS2",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Door Motion Sensor": [
+    {
+      "pi": "PI2",
+      "name": "DPIR2",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Garage DHT": [
+    {
+      "pi": "PI2",
+      "name": "GDHT",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Garage LCD": [
+    {
+      "pi": "PI2",
+      "name": "GLCD",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Gun Safe Gyro": [
+    {
+      "pi": "PI2",
+      "name": "GSG",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Room PIR": [
+    {
+      "pi": "PI2",
+      "name": "RPIR3",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Room DHT": [
+    {
+      "pi": "PI2",
+      "name": "RDH3",
+      "simulated": true,
+      "pin": 0
+    }
+  ]
+}

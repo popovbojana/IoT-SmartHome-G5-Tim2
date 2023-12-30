@@ -38,13 +38,13 @@ def run_sensors(settings, threads, stop_event):
     run_dms(dms_settings, threads, stop_event)
 
 
-def run_actuators(settings_pi1, threads, stop_event):
-    thread = threading.Thread(target = menu_actuators, args=(settings_pi1, threads, stop_event,))
+def run_actuators(settings, threads, stop_event):
+    thread = threading.Thread(target = menu_actuators, args=(settings, threads, stop_event,))
     thread.start()
     threads.append(thread)
 
 
-def menu_actuators(settings_pi1, threads, stop_event):
+def menu_actuators(settings, threads, stop_event):
     while not stop_event.is_set():
         print()
         option = input("Enter X/x to start actuator menu: ")
@@ -58,11 +58,11 @@ def menu_actuators(settings_pi1, threads, stop_event):
                           "3) Enter 3 to exit\n")
                     option = input("Enter: ")
                     if option == "1":
-                        dl_settings = settings_pi1['Door Light'][0]
+                        dl_settings = settings['Door Light'][0]
                         run_diode(dl_settings, threads, stop_event)
                         time.sleep(1)
                     elif option == "2":
-                        db_settings = settings_pi1['Door Buzzer'][0]
+                        db_settings = settings['Door Buzzer'][0]
                         duration = input("Enter duration: ")
                         run_buzzer(db_settings, threads, stop_event, duration)
                         time.sleep(int(duration))
@@ -78,17 +78,17 @@ def menu_actuators(settings_pi1, threads, stop_event):
 
 if __name__ == "__main__":
     print('Starting PI1...')
-    settings = load_settings()
-    threads = []
-    stop_event = threading.Event()
+    settings_pi1 = load_settings('settings/settings_pi1.json')
+    threads_pi1 = []
+    stop_event_pi1 = threading.Event()
     try:
-        run_sensors(settings, threads, stop_event)
-        run_actuators(settings, threads, stop_event)
+        run_sensors(settings_pi1, threads_pi1, stop_event_pi1)
+        run_actuators(settings_pi1, threads_pi1, stop_event_pi1)
 
         while True:
             time.sleep(1)
 
     except KeyboardInterrupt:
         print('Stopping app...')
-        for t in threads:
-            stop_event.set()
+        for t in threads_pi1:
+            stop_event_pi1.set()

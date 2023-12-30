@@ -1,0 +1,50 @@
+{
+  "Room PIR": [
+    {
+      "pi": "PI3",
+      "name": "RPIR4",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Room DHT": [
+    {
+      "pi": "PI3",
+      "name": "RDHT4",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Bedroom Buzzer": [
+    {
+      "pi": "PI3",
+      "name": "BB",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Bedroom 4 Digit 7 Segment Display": [
+    {
+      "pi": "PI3",
+      "name": "B4SD",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Bedroom Infrared": [
+    {
+      "pi": "PI3",
+      "name": "BIR",
+      "simulated": true,
+      "pin": 0
+    }
+  ],
+  "Bedroom RGB": [
+    {
+      "pi": "PI3",
+      "name": "BRGB",
+      "simulated": true,
+      "pin": 0
+    }
+  ]
+}

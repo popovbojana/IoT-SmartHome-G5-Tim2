@@ -2,7 +2,7 @@ import json
 import threading
 
 
-def load_settings(filePath='settings/settings.json'):
+def load_settings(filePath='settings/settings_pi1.json'):
     with open(filePath, 'r') as f:
         return json.load(f)
 
