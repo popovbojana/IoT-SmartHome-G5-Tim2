@@ -12,7 +12,7 @@ from model.dht import Dht
 from model.diode import Diode
 from model.dms import Dms
 from model.pir import Pir
-
+from model.gyro import Gyro
 
 app = Flask(__name__)
 
@@ -21,12 +21,9 @@ mqtt_port = 1883
 mqtt_username = "client"
 mqtt_password = "password"
 
-air_conditioners = {}
-ambient_senzors = {}
-lamps = {}
-vehicle_gates = {}
+topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro"]
 
-topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode"]
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT broker")
@@ -37,7 +34,6 @@ def on_connect(client, userdata, flags, rc):
 
     else:
         print(f"Connection failed with code {rc}")
-
 
 
 def on_message(client, userdata, msg):
@@ -64,6 +60,9 @@ def on_message(client, userdata, msg):
     elif msg.topic == "pir":
         pir = Pir(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["motion_detected"])
         pir.save_to_influxdb(client_influx)
+    elif msg.topic == "gyro":
+        gyro = Gyro(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["rotation"], payload["acceleration"])
+        gyro.save_to_influxdb(client_influx)
 
 
 def mqtt_subscribe():

@@ -4,6 +4,7 @@ from components.dht import run_dht
 from components.uds import run_uds
 from components.pir import run_pir
 from components.button import run_button
+from components.gyro import run_gyro
 
 import time
 
@@ -29,8 +30,7 @@ def run_sensors(settings, threads, stop_event):
     run_dht(gdht_settings, threads, stop_event)
     run_pir(rpir3_settings, threads, stop_event)
     run_dht(rdh3_settings, threads, stop_event)
-
-    # todo: dodati funkciju za pokretanje gun safe gyro
+    run_gyro(gsg_settings, threads, stop_event)
 
 
 def run_displays(settings, threads, stop_event):
