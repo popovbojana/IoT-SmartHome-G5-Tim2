@@ -1,6 +1,7 @@
 import time
 import random
 
+
 def generate_values(initial_distance=100):
     distance = initial_distance
     TRIG_PIN = False
@@ -32,6 +33,7 @@ def generate_values(initial_distance=100):
             ECHO_PIN = False
 
         yield distance
+
 
 def run_uds_simulator(delay, callback, stop_event, name):
     for d in generate_values():
