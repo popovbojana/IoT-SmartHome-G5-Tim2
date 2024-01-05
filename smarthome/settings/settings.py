@@ -14,3 +14,4 @@ def load_mqtt_config(filePath='settings/mqtt_configuration.json'):
 
 print_lock = threading.Lock()
 print_lock2 = threading.Lock()
+print_lock3 = threading.Lock()

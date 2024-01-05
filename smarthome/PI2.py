@@ -5,6 +5,7 @@ from components.uds import run_uds
 from components.pir import run_pir
 from components.button import run_button
 from components.gyro import run_gyro
+from components.lcd import run_lcd
 
 import time
 
@@ -35,7 +36,7 @@ def run_sensors(settings, threads, stop_event):
 
 def run_displays(settings, threads, stop_event):
     glcd_settings = settings['Garage LCD'][0]
-
+    run_lcd(glcd_settings, threads, stop_event)
     # todo: dodati funkciju za pokretanje displeja
 
 

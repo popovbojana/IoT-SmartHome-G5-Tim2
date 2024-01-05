@@ -7,6 +7,7 @@ from components.button import run_button
 from components.dms import run_dms
 from components.diode import run_diode
 from components.buzzer import run_buzzer
+from components.fdss import run_fdss
 from settings.settings import print_lock
 
 import time
@@ -64,7 +65,8 @@ def menu_actuators(settings, threads, stop_event):
 
 
 def run_displays(settings, threads, stop_event):
-    b4sd_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
+    fdss_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
+    run_fdss(fdss_settings, threads, stop_event)
 
     # todo: dodati funkciju za pokretanje displeja
 
@@ -75,8 +77,8 @@ if __name__ == "__main__":
     threads_pi3 = []
     stop_event_pi3 = threading.Event()
     try:
-        run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
-        run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
+        # run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
+        # run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
         run_displays(settings_pi3, threads_pi3, stop_event_pi3)
 
         while True:
