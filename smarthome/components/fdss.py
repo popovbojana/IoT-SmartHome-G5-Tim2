@@ -11,23 +11,23 @@ batch_size = 5
 lcd_batch = []
 
 
-def fdss_callback(a, b, code, settings):
+def fdss_callback(alarm_time, binary, code, settings):
     with print_lock:
         t = time.localtime()
         print()
         print("*" * 5 + settings['name'] + "*" * 5)
         print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
         print(f"Code: {code}")
-        print(f"Alarm time: {a}")
-        print(f"Binary: {b}")
+        print(f"Alarm time: {alarm_time}")
+        print(f"Binary: {binary}")
 
         message = {
-            "pi": "PI3",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),
-            "alarm_time": a,
-            "binary": b
+            "alarm_time": alarm_time,
+            "binary": binary
         }
         lcd_batch.append(message)
 
@@ -47,12 +47,10 @@ def run_fdss(settings, threads, stop_event):
         threads.append(lcd_thread)
         print(f"{settings['name']} simulator started")
     else:
-        pass
-        # todo: funkcije za gyro senzor
-        # from sensors.gyro import run_gyro_loop, Gyro
-        # print(f"Starting {settings['name']} loop")
-        # gyro = Gyro(settings['pin'])
-        # gyro_thread = threading.Thread(target=run_gyro_loop, args=(gyro, 2, gyro_callback, stop_event))
-        # gyro_thread.start()
-        # threads.append(gyro_thread)
-        # print(f"{settings['name']} loop started")
+        from sensors.fdss import run_fdss_loop, FDSS
+        print(f"Starting {settings['name']} loop")
+        fdss = FDSS(settings['name'], settings['segment_pins'], settings['digit_pins'])
+        fdss_thread = threading.Thread(target=run_fdss_loop, args=(fdss, 2, fdss_callback, stop_event))
+        fdss_thread.start()
+        threads.append(fdss_thread)
+        print(f"{settings['name']} loop started")

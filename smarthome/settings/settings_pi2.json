@@ -36,7 +36,9 @@
       "pi": "PI2",
       "name": "GLCD",
       "simulated": true,
-      "pin": 0
+      "pin_rs": 25,
+      "pin_e": 24,
+      "pins_db": [23, 17, 21, 22]
     }
   ],
   "Gun Safe Gyro": [

@@ -10,23 +10,21 @@ batch_size = 5
 rgb_led_batch = []
 
 
-def rgb_led_callback(comment, on, code, settings):
+def rgb_led_callback(state, code, settings):
     with print_lock2:
         t = time.localtime()
         print()
         print("*" * 5 + settings['name'] + "*" * 5)
         print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
         print(f"Code: {code}")
-        print(f"Comment: {comment}")
-        print(f"On: {on} sec")
+        print(f"State: {state}")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),
-            "comment": comment,
-            "on": on
+            "state": state,
         }
         rgb_led_batch.append(message)
 
@@ -38,9 +36,9 @@ def rgb_led_callback(comment, on, code, settings):
             rgb_led_batch.clear()
 
 
-def run_rgb_led(settings, threads, stop_event, duration):
+def run_rgb_led(settings, threads, stop_event, state):
     if settings['simulated']:
-        buzzer_thread = threading.Thread(target=rgb_led_callback, args=(duration, "BUZZER_OK", settings))
+        buzzer_thread = threading.Thread(target=rgb_led_callback, args=(state, "RGB_" + state, settings))
         buzzer_thread.start()
         threads.append(buzzer_thread)
     else:

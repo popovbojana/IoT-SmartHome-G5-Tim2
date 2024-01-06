@@ -63,28 +63,28 @@ def run_diode_loop(rgb_led, delay, callback, stop_event):
             "Enter (white, red, green, blue, yellow, purple or light_blue) to select light,\n off to turn off or cancel to exit: ")
         if command == 'white':
             rgb_led.white()
-            callback("Light are white", True, "RGB_LED_WHITE", rgb_led.name)
+            callback("WHITE", "RGB_LED_WHITE", rgb_led.name)
         elif command == 'red':
             rgb_led.red()
-            callback("Light are red", True, "RGB_LED_RED", rgb_led.name)
+            callback("RED", "RGB_LED_RED", rgb_led.name)
         elif command == 'green':
             rgb_led.green()
-            callback("Light are green", True, "RGB_LED_GREEN", rgb_led.name)
+            callback("GREEN", "RGB_LED_GREEN", rgb_led.name)
         elif command == 'blue':
             rgb_led.blue()
-            callback("Light are blue", True, "RGB_LED_BLUE", rgb_led.name)
+            callback("BLUE", "RGB_LED_BLUE", rgb_led.name)
         elif command == 'yellow':
             rgb_led.yellow()
-            callback("Light are yellow", True, "RGB_LED_YELLOW", rgb_led.name)
+            callback("YELLOW", "RGB_LED_YELLOW", rgb_led.name)
         elif command == 'purple':
             rgb_led.purple()
-            callback("Light are purple", True, "RGB_LED_PURPLE", rgb_led.name)
+            callback("PURPLE", "RGB_LED_PURPLE", rgb_led.name)
         elif command == 'light_blue':
             rgb_led.lightBlue()
-            callback("Light are light_blue", True, "RGB_LED_LIGHT_BLUE", rgb_led.name)
+            callback("BLUE", "RGB_LED_LIGHT_BLUE", rgb_led.name)
         elif command == 'off':
             rgb_led.turnOff()
-            callback("Light are off", False, "RGB_LED_OFF", rgb_led.name)
+            callback("OFF", "RGB_LED_OFF", rgb_led.name)
         if stop_event.is_set():
             break
         time.sleep(delay)

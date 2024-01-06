@@ -13,6 +13,9 @@ from model.diode import Diode
 from model.dms import Dms
 from model.pir import Pir
 from model.gyro import Gyro
+from model.lcd import Lcd
+from model.rgb_led import Rgb_led
+from model.fdss import Fdss
 
 app = Flask(__name__)
 
@@ -21,7 +24,7 @@ mqtt_port = 1883
 mqtt_username = "client"
 mqtt_password = "password"
 
-topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro"]
+topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss"]
 
 
 def on_connect(client, userdata, flags, rc):
@@ -63,6 +66,15 @@ def on_message(client, userdata, msg):
     elif msg.topic == "gyro":
         gyro = Gyro(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["rotation"], payload["acceleration"])
         gyro.save_to_influxdb(client_influx)
+    elif msg.topic == "lcd":
+        lcd = Lcd(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["display"])
+        lcd.save_to_influxdb(client_influx)
+    elif msg.topic == "rgb_led":
+        rgb_led = Rgb_led(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["state"])
+        rgb_led.save_to_influxdb(client_influx)
+    elif msg.topic == "fdss":
+        fdss = Fdss(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["alarm_time"])
+        fdss.save_to_influxdb(client_influx)
 
 
 def mqtt_subscribe():
@@ -97,7 +109,7 @@ config = {
         "port": 8086,
         "organization": "nwt",
         "bucket": "measurements",
-        "token": "mvuvk4gZwyQ1cSV66lq40FDDg9MCnNpvRwNpbZMFgP-o3Y_QZ__gKEhAXRDP2KSh6Hl7dRINf17NpwKwfpYn3g=="
+        "token": "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
     }
 }
 

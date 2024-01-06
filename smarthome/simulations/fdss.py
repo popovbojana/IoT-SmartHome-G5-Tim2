@@ -35,9 +35,3 @@ def run_fdss_simulator(delay, callback, stop_event, name):
         callback(a, b, "FDSS_OK", name)
         if stop_event.is_set():
             break
-
-
-
-if __name__ == '__main__':  # Program start from here
-    generate_values()
-

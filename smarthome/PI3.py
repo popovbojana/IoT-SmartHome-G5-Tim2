@@ -8,6 +8,7 @@ from components.dms import run_dms
 from components.diode import run_diode
 from components.buzzer import run_buzzer
 from components.fdss import run_fdss
+from components.rgb_led import run_rgb_led
 from settings.settings import print_lock
 
 import time
@@ -47,7 +48,8 @@ def menu_actuators(settings, threads, stop_event):
                     print()
                     print("**** ACTUATOR MENU ****")
                     print("1) Enter 1 to buzz\n"
-                          "2) Enter 2 to exit\n")
+                          "2) Enter 2 for RGB\n"
+                          "3) Enter 3 to exit\n")
                     option = input("Enter: ")
                     if option == "1":
                         bb_settings = settings['Bedroom Buzzer'][0]
@@ -55,6 +57,14 @@ def menu_actuators(settings, threads, stop_event):
                         run_buzzer(bb_settings, threads, stop_event, duration)
                         time.sleep(int(duration))
                     elif option == "2":
+                        brgb_settings = settings['Bedroom RGB'][0]
+                        color = input("Enter (white, red, green, blue, yellow, purple or light_blue) to select light,\n off to turn off:")
+                        if color.upper() not in ["WHITE", "RED", "GREEN", "BLUE", "YELLOW", "PURPLE", "LIGHT_BLUE", "OFF"]:
+                            break
+                        else:
+                            run_rgb_led(brgb_settings, threads, stop_event, color)
+                            time.sleep(1)
+                    elif option == "3":
                         print("Exiting the menu. Printing is resumed.")
                         break
 
@@ -66,9 +76,8 @@ def menu_actuators(settings, threads, stop_event):
 
 def run_displays(settings, threads, stop_event):
     fdss_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
-    run_fdss(fdss_settings, threads, stop_event)
 
-    # todo: dodati funkciju za pokretanje displeja
+    run_fdss(fdss_settings, threads, stop_event)
 
 
 if __name__ == "__main__":
@@ -77,8 +86,8 @@ if __name__ == "__main__":
     threads_pi3 = []
     stop_event_pi3 = threading.Event()
     try:
-        # run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
-        # run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
+        run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
+        run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
         run_displays(settings_pi3, threads_pi3, stop_event_pi3)
 
         while True:

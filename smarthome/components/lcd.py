@@ -45,12 +45,10 @@ def run_lcd(settings, threads, stop_event):
         threads.append(lcd_thread)
         print(f"{settings['name']} simulator started")
     else:
-        pass
-        # todo: funkcije za gyro senzor
-        # from sensors.gyro import run_gyro_loop, Gyro
-        # print(f"Starting {settings['name']} loop")
-        # gyro = Gyro(settings['pin'])
-        # gyro_thread = threading.Thread(target=run_gyro_loop, args=(gyro, 2, gyro_callback, stop_event))
-        # gyro_thread.start()
-        # threads.append(gyro_thread)
-        # print(f"{settings['name']} loop started")
+        from sensors.lcd.Adafruit_LCD1602 import run_lcd_loop, Adafruit_CharLCD
+        print(f"Starting {settings['name']} loop")
+        lcd = Adafruit_CharLCD(settings['name'], settings['pin_rs'], settings['pin_e'], settings['pins_db'])
+        lcd_thread = threading.Thread(target=run_lcd_loop, args=(lcd, 2, lcd_callback, stop_event))
+        lcd_thread.start()
+        threads.append(lcd_thread)
+        print(f"{settings['name']} loop started")
