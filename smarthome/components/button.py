@@ -20,7 +20,7 @@ def button_callback(pushed, unlocked, code, settings):
         print(f"{pushed}")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

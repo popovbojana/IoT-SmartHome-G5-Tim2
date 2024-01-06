@@ -36,8 +36,8 @@ def run_sensors(settings, threads, stop_event):
 
 def run_displays(settings, threads, stop_event):
     glcd_settings = settings['Garage LCD'][0]
+
     run_lcd(glcd_settings, threads, stop_event)
-    # todo: dodati funkciju za pokretanje displeja
 
 
 if __name__ == "__main__":

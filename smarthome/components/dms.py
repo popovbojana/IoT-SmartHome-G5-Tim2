@@ -21,7 +21,7 @@ def dms_callback(key, code, settings):
         print(f"Key: {key}")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

@@ -22,7 +22,7 @@ def dht_callback(humidity, temperature, code, settings):
         print(f"Temperature: {temperature}°C")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

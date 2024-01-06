@@ -21,7 +21,7 @@ def lcd_callback(display, code, settings):
         print(f"Display: {display}%")
 
         message = {
-            "pi": "PI2",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

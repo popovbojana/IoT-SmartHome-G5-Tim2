@@ -29,8 +29,6 @@ def run_sensors(settings, threads, stop_event):
     run_pir(rpir4_settings, threads, stop_event)
     run_dht(rdh4_settings, threads, stop_event)
 
-    # todo: dodati funkciju za pokretanje bedroom infrared
-
 
 def run_actuators(settings, threads, stop_event):
     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
@@ -75,9 +73,9 @@ def menu_actuators(settings, threads, stop_event):
 
 
 def run_displays(settings, threads, stop_event):
-    fdss_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
+    b4sd_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
 
-    run_fdss(fdss_settings, threads, stop_event)
+    run_fdss(b4sd_settings, threads, stop_event)
 
 
 if __name__ == "__main__":

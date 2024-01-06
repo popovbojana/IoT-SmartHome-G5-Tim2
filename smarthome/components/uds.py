@@ -21,7 +21,7 @@ def uds_callback(distance, code, settings):
         print(f"Distance: {distance}")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

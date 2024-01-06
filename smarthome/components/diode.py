@@ -28,7 +28,7 @@ def diode_callback(code, settings):
             print("Light is off\n")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

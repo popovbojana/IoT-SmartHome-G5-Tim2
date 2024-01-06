@@ -22,7 +22,7 @@ def buzzer_callback(duration, code, settings):
         print(f"Duration: {duration} sec")
 
         message = {
-            "pi": "PI1",
+            "pi": settings['pi'],
             "name": settings['name'],
             "simulated": settings['simulated'],
             "timestamp": time.time(),

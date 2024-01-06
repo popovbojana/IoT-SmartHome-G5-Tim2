@@ -109,7 +109,9 @@ config = {
         "port": 8086,
         "organization": "nwt",
         "bucket": "measurements",
+        #FILIP TOKEN:
         "token": "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
+        #BOJANA TOKEN:
     }
 }
 
