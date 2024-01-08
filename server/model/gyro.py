@@ -12,10 +12,10 @@ class Gyro:
         self.acceleration = acceleration
 
     def save_to_influxdb(self, client):
-        point = Point("dht_data").time(int(self.timestamp), WritePrecision.S)
-        point.field("pi", self.pi)
-        point.field("name", self.name)
-        point.field("simulated", self.simulated)
+        point = Point("gyro_data").time(int(self.timestamp), WritePrecision.S)
+        point.tag("pi", self.pi)
+        point.tag("name", self.name)
+        point.tag("simulated", self.simulated)
         point.field("rotation", self.rotation)
         point.field("acceleration", self.acceleration)
 

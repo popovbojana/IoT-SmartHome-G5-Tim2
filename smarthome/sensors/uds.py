@@ -39,13 +39,14 @@ class UDS:
         distance = (pulse_duration * 34300)/2
         return distance
 
-def run_uds_loop(uds, delay, callback, stop_event):
+
+def run_uds_loop(uds, delay, callback, stop_event, settings, publish_event):
     while True:
         distance = uds.get_distance()
         if distance is not None:
-            callback(distance, "UDSLIB_OK", uds.name)
+            callback(distance, "UDSLIB_OK", settings, publish_event)
         else:
-            callback(distance, "UDSLIB_NONE", uds.name)
+            callback(distance, "UDSLIB_NONE", settings, publish_event)
 
         if stop_event.is_set():
             break

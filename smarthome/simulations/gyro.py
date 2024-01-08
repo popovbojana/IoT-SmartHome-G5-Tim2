@@ -12,10 +12,10 @@ def generate_values(initial_rotation=0, initial_acceleration=0):
         yield rotation, acceleration
 
 
-def run_gyro_simulator(delay, callback, stop_event, name):
+def run_gyro_simulator(delay, callback, stop_event, settings, publish_event):
     for r, a in generate_values():
         time.sleep(delay)
-        callback(r, a, "GYRO_OK", name)
+        callback(r, a, "GYRO_OK", settings, publish_event)
 
         if stop_event.is_set():
             break

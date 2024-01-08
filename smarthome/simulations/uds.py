@@ -35,9 +35,9 @@ def generate_values(initial_distance=100):
         yield distance
 
 
-def run_uds_simulator(delay, callback, stop_event, name):
+def run_uds_simulator(delay, callback, stop_event, settings, publish_event):
     for d in generate_values():
         time.sleep(delay)
-        callback(d, "UDSLIB_OK", name)
+        callback(d, "UDSLIB_OK", settings, publish_event)
         if stop_event.is_set():
             break

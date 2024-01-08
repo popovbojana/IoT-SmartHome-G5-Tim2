@@ -55,7 +55,7 @@ def on_message(client, userdata, msg):
         dht = Dht(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["humidity"], payload["temperature"])
         dht.save_to_influxdb(client_influx)
     elif msg.topic == "diode":
-        diode = Diode(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["light_on"])
+        diode = Diode(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["light_state"])
         diode.save_to_influxdb(client_influx)
     elif msg.topic == "dms":
         dms = Dms(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["key"])
@@ -108,16 +108,18 @@ config = {
         "host": "localhost",
         "port": 8086,
         "organization": "nwt",
-        "bucket": "measurements",
+        "bucket": "iot",
         #FILIP TOKEN:
-        "token": "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
+        # "token": "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
         #BOJANA TOKEN:
+        "token": "mvuvk4gZwyQ1cSV66lq40FDDg9MCnNpvRwNpbZMFgP-o3Y_QZ__gKEhAXRDP2KSh6Hl7dRINf17NpwKwfpYn3g=="
     }
 }
 
 influxdb_config = config.get("influxdb", {})
 
-client_influx = InfluxDBClient(url=f"http://{influxdb_config['host']}:{influxdb_config['port']}", token=influxdb_config['token'], org=influxdb_config['organization'])
+client_influx = InfluxDBClient(url=f"http://{influxdb_config['host']}:{influxdb_config['port']}",
+                               token=influxdb_config['token'], org=influxdb_config['organization'])
 
 
 mqtt_thread = threading.Thread(target=mqtt_subscribe)

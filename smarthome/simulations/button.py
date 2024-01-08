@@ -7,12 +7,12 @@ def generate_values():
         yield random.choice([True, False])
 
 
-def run_button_simulator(delay, callback, stop_event, name):
+def run_button_simulator(delay, callback, stop_event, settings, publish_event):
     for pushed in generate_values():
         time.sleep(delay)
         if pushed:
-            callback("Door is unlocked", True,  "BUTTON_OK", name)
+            callback("Door is unlocked", True,  "BUTTON_OK", settings, publish_event)
         else:
-            callback("Door is locked", False, "BUTTON_OK", name)
+            callback("Door is locked", False, "BUTTON_OK", settings, publish_event)
         if stop_event.is_set():
             break

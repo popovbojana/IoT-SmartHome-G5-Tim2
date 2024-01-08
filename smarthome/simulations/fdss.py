@@ -12,6 +12,7 @@ num = {' ': (0, 0, 0, 0, 0, 0, 0),
        '8': (1, 1, 1, 1, 1, 1, 1),
        '9': (1, 1, 1, 1, 0, 1, 1)}
 
+
 def generate_values():
     binary = []
     while True:
@@ -29,9 +30,9 @@ def generate_values():
         binary = []
 
 
-def run_fdss_simulator(delay, callback, stop_event, name):
+def run_fdss_simulator(delay, callback, stop_event, settings, publish_event):
     for a, b in generate_values():
         time.sleep(delay)
-        callback(a, b, "FDSS_OK", name)
+        callback(a, b, "FDSS_OK", settings, publish_event)
         if stop_event.is_set():
             break

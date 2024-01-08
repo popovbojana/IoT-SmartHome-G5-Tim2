@@ -19,10 +19,10 @@ def generate_values(initial_temp=25, initial_humidity=20):
         yield display
 
 
-def run_lcd_simulator(delay, callback, stop_event, name):
+def run_lcd_simulator(delay, callback, stop_event, settings, publish_event):
     for display in generate_values():
         time.sleep(delay)
-        callback(display, "LCD_OK", name)
+        callback(display, "LCD_OK", settings, publish_event)
         if stop_event.is_set():
             break
 

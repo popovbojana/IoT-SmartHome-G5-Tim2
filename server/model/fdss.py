@@ -12,9 +12,9 @@ class Fdss:
 
     def save_to_influxdb(self, client):
         point = Point("fdss_data").time(int(self.timestamp), WritePrecision.S)
-        point.field("pi", self.pi)
-        point.field("name", self.name)
-        point.field("simulated", self.simulated)
+        point.tag("pi", self.pi)
+        point.tag("name", self.name)
+        point.tag("simulated", self.simulated)
         point.field("alarm_time", self.alarm_time)
 
         write_api = client.write_api(write_options=SYNCHRONOUS)

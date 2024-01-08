@@ -48,10 +48,10 @@ class FDSS:
         return n, binary
 
 
-def run_fdss_loop(fdss, delay, callback, stop_event):
+def run_fdss_loop(fdss, delay, callback, stop_event, settings, publish_event):
     while True:
         a, b = fdss.show_time()
-        callback(a, b, "FDSS_OK", fdss.name)
+        callback(a, b, "FDSS_OK", settings, publish_event)
         if stop_event.is_set():
             break
         time.sleep(delay)

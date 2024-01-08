@@ -21,12 +21,12 @@ class PIR:
         return self.detected_motion
 
 
-def run_pir_loop(pir, delay, callback, stop_event):
+def run_pir_loop(pir, delay, callback, stop_event, settings, publish_event):
     while True:
         if pir.read_pir():
-            callback("Motion detected", "PIR_OK", pir.name)
+            callback("Motion detected", True, "PIR_OK", settings, publish_event)
         else:
-            callback("No motion", "PIR_OK", pir.name)
+            callback("No motion", False, "PIR_OK", settings, publish_event)
         if stop_event.is_set():
             break
         time.sleep(delay)
