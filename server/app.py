@@ -1,9 +1,11 @@
 from flask import Flask
 import json
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as mqtt_publish
 import time
 from influxdb_client import InfluxDBClient
 import threading
+
 
 from model.uds import Uds
 from model.button import Button
@@ -126,4 +128,8 @@ mqtt_thread = threading.Thread(target=mqtt_subscribe)
 mqtt_thread.start()
 
 if __name__ == "__main__":
-    app.run()
+    dht_batch = ['asd', 'asd']
+    msgs = [{"topic": "dpir1-light-on", "payload": json.dumps(msg)} for msg in dht_batch]
+    mqtt_publish.multiple(msgs, hostname='localhost', port=1883,
+                          auth={"username": 'client', "password": 'password'})
+    # app.run()

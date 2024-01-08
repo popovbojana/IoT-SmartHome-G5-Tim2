@@ -1,4 +1,6 @@
 import threading
+import paho.mqtt.client as mqtt
+
 from settings.settings import load_settings
 from components.dht import run_dht
 from components.uds import run_uds
@@ -6,6 +8,7 @@ from components.pir import run_pir
 from components.button import run_button
 from components.gyro import run_gyro
 from components.lcd import run_lcd
+from settings.settings import load_mqtt_config
 
 import time
 
@@ -40,11 +43,56 @@ def run_displays(settings, threads, stop_event):
     run_lcd(glcd_settings, threads, stop_event)
 
 
+topics = ['lcd-display', 'system-on', 'system-off']
+all_topics_subscribed = threading.Event()
+
+system_event = threading.Event()
+
+
+def on_message(client, userdata, msg):
+    if msg.topic == 'lcd-display':
+        print("ASD")
+    elif msg.topic == 'system-on':
+        pass
+    elif msg.topic == 'system-off':
+        pass
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected PI2 to MQTT broker\n")
+
+        for topic in topics:
+            client.subscribe(topic)
+            print("Subscribed to: " + topic)
+        all_topics_subscribed.set()
+
+
+    else:
+        print(f"Connection failed with code {rc}")
+
+
+def mqtt_subscribe():
+    mqtt_config = load_mqtt_config()
+    client = mqtt.Client()
+    client.username_pw_set(username=mqtt_config['username'], password=mqtt_config['password'])
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(mqtt_config['host'], mqtt_config['port'], 60)
+    client.loop_forever()
+
+
 if __name__ == "__main__":
     print('Starting PI2...')
     settings_pi2 = load_settings('settings/settings_pi2.json')
     threads_pi2 = []
     stop_event_pi2 = threading.Event()
+
+    mqtt_thread = threading.Thread(target=mqtt_subscribe)
+    mqtt_thread.start()
+    all_topics_subscribed.wait()
+
+    print()
     try:
         run_sensors(settings_pi2, threads_pi2, stop_event_pi2)
         run_displays(settings_pi2, threads_pi2, stop_event_pi2)
