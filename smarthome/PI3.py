@@ -1,11 +1,7 @@
 import threading
 from settings.settings import load_settings
 from components.dht import run_dht
-from components.uds import run_uds
 from components.pir import run_pir
-from components.button import run_button
-from components.dms import run_dms
-from components.diode import run_diode
 from components.buzzer import run_buzzer
 from components.fdss import run_fdss
 from components.rgb_led import run_rgb_led
@@ -28,6 +24,7 @@ def run_sensors(settings, threads, stop_event):
 
     run_pir(rpir4_settings, threads, stop_event)
     run_dht(rdh4_settings, threads, stop_event)
+    run_pir(bir_settings, threads, stop_event)
 
 
 def run_actuators(settings, threads, stop_event):
