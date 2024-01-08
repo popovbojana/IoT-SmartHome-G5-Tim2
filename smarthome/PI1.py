@@ -1,4 +1,6 @@
 import threading
+import paho.mqtt.client as mqtt
+
 from settings.settings import load_settings
 from components.dht import run_dht
 from components.uds import run_uds
@@ -8,11 +10,13 @@ from components.dms import run_dms
 from components.diode import run_diode
 from components.buzzer import run_buzzer
 from settings.settings import print_lock
+from settings.settings import load_mqtt_config
 
 import time
 
 try:
     import RPi.GPIO as GPIO
+
     GPIO.setmode(GPIO.BCM)
 except:
     pass
@@ -39,7 +43,7 @@ def run_sensors(settings, threads, stop_event):
 
 
 def run_actuators(settings, threads, stop_event):
-    thread = threading.Thread(target = menu_actuators, args=(settings, threads, stop_event,))
+    thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
     thread.start()
     threads.append(thread)
 
@@ -76,11 +80,61 @@ def menu_actuators(settings, threads, stop_event):
             pass
 
 
+topics = ['dpir1-light-on', 'alarm-on', 'alarm-off', 'system-on', 'system-off']
+all_topics_subscribed = threading.Event()
+
+alarm_event = threading.Event()
+system_event = threading.Event()
+
+
+def on_message(client, userdata, msg):
+    if msg.topic == 'dpir1-light-on':
+        print("ASD")
+    elif msg.topic == 'alarm-on':
+        pass
+    elif msg.topic == 'alarm-off':
+        pass
+    elif msg.topic == 'system-on':
+        pass
+    elif msg.topic == 'system-off':
+        pass
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Connected PI1 to MQTT broker\n")
+
+        for topic in topics:
+            client.subscribe(topic)
+            print("Subscribed to: " + topic)
+        all_topics_subscribed.set()
+
+
+    else:
+        print(f"Connection failed with code {rc}")
+
+
+def mqtt_subscribe():
+    mqtt_config = load_mqtt_config()
+    client = mqtt.Client()
+    client.username_pw_set(username=mqtt_config['username'], password=mqtt_config['password'])
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(mqtt_config['host'], mqtt_config['port'], 60)
+    client.loop_forever()
+
+
 if __name__ == "__main__":
     print('Starting PI1...')
     settings_pi1 = load_settings('settings/settings_pi1.json')
     threads_pi1 = []
     stop_event_pi1 = threading.Event()
+
+    mqtt_thread = threading.Thread(target=mqtt_subscribe)
+    mqtt_thread.start()
+    all_topics_subscribed.wait()
+
+    print()
     try:
         run_sensors(settings_pi1, threads_pi1, stop_event_pi1)
         run_actuators(settings_pi1, threads_pi1, stop_event_pi1)
