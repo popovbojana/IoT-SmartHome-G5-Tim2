@@ -1,6 +1,0 @@
-{
-  "host": "localhost",
-  "port": 1883,
-  "username": "client",
-  "password": "password"
-}
