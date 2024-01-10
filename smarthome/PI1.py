@@ -32,14 +32,14 @@ def run_sensors(settings, threads, stop_event):
     ds1_settings = settings['Door Sensor'][0]
     dms_settings = settings['Door Membrane Switch'][0]
 
-    run_dht(rdh1_settings, threads, stop_event)
-    run_dht(rdh2_settings, threads, stop_event)
-    run_uds(dus1_settings, threads, stop_event)
+    # run_dht(rdh1_settings, threads, stop_event)
+    # run_dht(rdh2_settings, threads, stop_event)
+    # run_uds(dus1_settings, threads, stop_event)
     run_pir(dpir1_settings, threads, stop_event)
     run_pir(rpir1_settings, threads, stop_event)
     run_pir(rpir2_settings, threads, stop_event)
-    run_button(ds1_settings, threads, stop_event)
-    run_dms(dms_settings, threads, stop_event)
+    # run_button(ds1_settings, threads, stop_event)
+    # run_dms(dms_settings, threads, stop_event)
 
 
 def run_actuators(settings, threads, stop_event):
@@ -89,7 +89,8 @@ system_event = threading.Event()
 
 def on_message(client, userdata, msg):
     if msg.topic == 'dpir1-light-on':
-        print("ASD")
+        dl_settings = settings_pi1['Door Light'][0]
+        run_diode(dl_settings, threads_pi1, stop_event_pi1)
     elif msg.topic == 'alarm-on':
         pass
     elif msg.topic == 'alarm-off':

@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, jsonify
 import json
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as mqtt_publish
 import time
-from influxdb_client import InfluxDBClient
+from influxdb_client import InfluxDBClient, Point
 import threading
-
+from settings.settings import load_mqtt_config
 
 from model.uds import Uds
 from model.button import Button
@@ -25,6 +25,8 @@ mqtt_host = "localhost"
 mqtt_port = 1883
 mqtt_username = "client"
 mqtt_password = "password"
+
+mqtt_config = load_mqtt_config()
 
 topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss"]
 
@@ -65,6 +67,22 @@ def on_message(client, userdata, msg):
     elif msg.topic == "pir":
         pir = Pir(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["motion_detected"])
         pir.save_to_influxdb(client_influx)
+        # pir.turn_on_light()
+
+        if payload["name"] == "DPIR1":
+            msg = json.dumps({"event": "turn-on"})
+            mqtt_publish.single("dpir1-light-on", payload=msg, hostname=mqtt_config['host'], port=mqtt_config['port'],
+                                auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+            query = """
+            from(bucket: "iot")
+              |> range(start: -1m, stop: now())
+              |> filter(fn: (r) => r["_measurement"] == "uds_data")
+              |> filter(fn: (r) => r["_field"] == "distance")
+              |> filter(fn: (r) => r["name"] == "DUS1")
+            """
+            last_dus1_data = handle_influx_query(query)
+            print(last_dus1_data['data'])
+
     elif msg.topic == "gyro":
         gyro = Gyro(payload["timestamp"], payload["pi"], payload["name"], payload["simulated"], payload["rotation"], payload["acceleration"])
         gyro.save_to_influxdb(client_influx)
@@ -100,6 +118,21 @@ def publish_mqtt_message(message):
     client.loop_stop()
 
 
+def handle_influx_query(query):
+    try:
+        query_api = client_influx.query_api()
+        tables = query_api.query(query)
+
+        container = []
+        for table in tables:
+            for record in table.records:
+                container.append(record.values)
+
+        return jsonify({"status": "success", "data": container})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+
 @app.route("/")
 def index():
     return "Flask MQTT Publisher"
@@ -128,8 +161,4 @@ mqtt_thread = threading.Thread(target=mqtt_subscribe)
 mqtt_thread.start()
 
 if __name__ == "__main__":
-    dht_batch = ['asd', 'asd']
-    msgs = [{"topic": "dpir1-light-on", "payload": json.dumps(msg)} for msg in dht_batch]
-    mqtt_publish.multiple(msgs, hostname='localhost', port=1883,
-                          auth={"username": 'client', "password": 'password'})
-    # app.run()
+    app.run()

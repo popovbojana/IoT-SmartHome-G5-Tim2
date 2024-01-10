@@ -34,12 +34,12 @@ publisher_thread.start()
 def pir_callback(motion, detected, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
-    t = time.localtime()
-    print()
-    print("*" * 5 + settings['name'] + "*" * 5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"{motion}")
+    # t = time.localtime()
+    # print()
+    # print("*" * 5 + settings['name'] + "*" * 5)
+    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    # print(f"Code: {code}")
+    # print(f"{motion}")
 
     message = {
         "pi": settings['pi'],

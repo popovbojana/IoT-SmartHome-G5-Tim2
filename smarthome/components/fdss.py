@@ -34,13 +34,13 @@ publisher_thread.start()
 def fdss_callback(alarm_time, binary, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
-    t = time.localtime()
-    print()
-    print("*" * 5 + settings['name'] + "*" * 5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Alarm time: {alarm_time}")
-    print(f"Binary: {binary}")
+    # t = time.localtime()
+    # print()
+    # print("*" * 5 + settings['name'] + "*" * 5)
+    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    # print(f"Code: {code}")
+    # print(f"Alarm time: {alarm_time}")
+    # print(f"Binary: {binary}")
 
     message = {
         "pi": settings['pi'],

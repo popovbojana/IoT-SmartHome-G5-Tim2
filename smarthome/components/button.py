@@ -35,12 +35,12 @@ publisher_thread.start()
 def button_callback(pushed, unlocked, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
-    t = time.localtime()
-    print()
-    print("*" * 5 + settings['name'] + "*" * 5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"{pushed}")
+    # t = time.localtime()
+    # print()
+    # print("*" * 5 + settings['name'] + "*" * 5)
+    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    # print(f"Code: {code}")
+    # print(f"{pushed}")
 
     message = {
         "pi": settings['pi'],
