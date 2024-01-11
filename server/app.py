@@ -140,6 +140,20 @@ def on_message(client, userdata, msg):
 
     elif msg.topic == "gyro":
         save_gyro_data(payload, influxdb_client)
+
+        acceleration = float(payload['acceleration'])
+        rotation = float(payload['rotation'])
+        print("acceleration: ", acceleration)
+        print("rotation: ", rotation)
+
+        if acceleration < -9.5 or acceleration > 9.5:
+            msg = json.dumps({"alarm": "on"})
+            mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+
+        if rotation < -175 or rotation > 175:
+            msg = json.dumps({"event": "turn-on"})
+            mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+
     elif msg.topic == "lcd":
         save_lcd_data(payload, influxdb_client)
     elif msg.topic == "rgb_led":
