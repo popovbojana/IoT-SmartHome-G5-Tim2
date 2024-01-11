@@ -37,7 +37,7 @@
       "pi": "PI3",
       "name": "BIR",
       "simulated": true,
-      "pin": 0
+      "pin": 17
     }
   ],
   "Bedroom RGB": [

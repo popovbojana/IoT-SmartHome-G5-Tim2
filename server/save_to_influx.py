@@ -127,3 +127,14 @@ def save_fdss_data(payload, client):
     write_api = client.write_api(write_options=SYNCHRONOUS)
     write_api.write(bucket=BUCKET, org=ORG, record=point)
 
+
+def save_ir_data(payload, client):
+    point = Point("ir_data").time(int(payload["timestamp"]), WritePrecision.S)
+    point.tag("pi", payload["pi"])
+    point.tag("name", payload["name"])
+    point.tag("simulated", payload["simulated"])
+    point.field("button", payload["button"])
+
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+    write_api.write(bucket=BUCKET, org=ORG, record=point)
+
