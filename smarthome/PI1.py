@@ -118,13 +118,12 @@ if __name__ == "__main__":
     threads_pi1 = []
     stop_event_pi1 = threading.Event()
 
-    # MQTT Config
     mqtt_client = mqtt.Client()
-    mqtt_client.connect(HOST, PORT, 60)
-    mqtt_client.loop_start()
-
+    # mqtt_client.username_pw_set(username="client", password="password")
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = lambda client, userdata, msg: on_message(client, userdata, msg)
+    mqtt_client.connect(HOST, PORT, 60)
+    mqtt_client.loop_start()
 
     try:
         run_sensors(settings_pi1, threads_pi1, stop_event_pi1)
