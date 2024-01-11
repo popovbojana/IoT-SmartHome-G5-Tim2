@@ -20,6 +20,7 @@ def save_button_data(payload, client):
     point.tag("pi", payload["pi"])
     point.tag("name", payload["name"])
     point.tag("simulated", payload["simulated"])
+    point.tag("code", payload["code"])
     point.field("door_unlocked", payload["door_unlocked"])
 
     write_api = client.write_api(write_options=SYNCHRONOUS)

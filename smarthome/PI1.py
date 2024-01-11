@@ -31,6 +31,7 @@ def run_sensors(settings, threads, stop_event):
     rpir2_settings = settings['Room PIR'][1]
     ds1_settings = settings['Door Sensor'][0]
     dms_settings = settings['Door Membrane Switch'][0]
+    db_settings = settings['Door Buzzer'][0]
 
     run_dht(rdh1_settings, threads, stop_event)
     run_dht(rdh2_settings, threads, stop_event)
@@ -38,8 +39,9 @@ def run_sensors(settings, threads, stop_event):
     run_pir(dpir1_settings, threads, stop_event)
     run_pir(rpir1_settings, threads, stop_event)
     run_pir(rpir2_settings, threads, stop_event)
-    run_button(ds1_settings, threads, stop_event)
+    run_button(ds1_settings, threads, stop_event, alarm_event)
     run_dms(dms_settings, threads, stop_event)
+    run_buzzer(db_settings, threads, stop_event, alarm_event)
 
 
 def run_actuators(settings, threads, stop_event):
@@ -103,7 +105,8 @@ def on_message(client, userdata, msg):
         dl_settings = settings_pi1['Door Light'][0]
         run_diode(dl_settings, threads_pi1, stop_event_pi1)
     elif msg.topic == 'alarm-on':
-        pass
+        print("AAAAAAALARM")
+        alarm_event.set()
     elif msg.topic == 'alarm-off':
         pass
     elif msg.topic == 'system-on':

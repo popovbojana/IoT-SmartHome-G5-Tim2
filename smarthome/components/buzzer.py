@@ -35,13 +35,13 @@ def buzzer_callback(duration, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
     pitch = 440
-    # t = time.localtime()
-    # print()
-    # print("*" * 5 + settings['name'] + "*" * 5)
-    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    # print(f"Code: {code}")
+    t = time.localtime()
+    print()
+    print("*" * 5 + settings['name'] + "*" * 5)
+    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    print(f"Code: {code}")
     # print(f"Pitch: {pitch}")
-    # print(f"Duration: {duration} sec")
+    print(f"Duration: {duration} sec")
 
     message = {
         "pi": settings['pi'],
@@ -60,10 +60,10 @@ def buzzer_callback(duration, code, settings, publish_event):
         publish_event.set()
 
 
-def run_buzzer(settings, threads, stop_event, duration):
+def run_buzzer(settings, threads, stop_event, alarm_event):
     if settings['simulated']:
-        buzzer_thread = threading.Thread(target=run_buzzer_simulator, args=(duration, buzzer_callback, stop_event,
-                                                                            settings, publish_event))
+        buzzer_thread = threading.Thread(target=run_buzzer_simulator, args=(buzzer_callback, stop_event,
+                                                                            settings, publish_event, alarm_event))
         buzzer_thread.start()
         threads.append(buzzer_thread)
     else:
