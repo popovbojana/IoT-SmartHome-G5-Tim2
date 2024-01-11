@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from flask import Flask, jsonify
 import json
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as mqtt_publish
 from influxdb_client import InfluxDBClient
 import paho.mqtt.publish as mqtt_publish
 from settings.broker_settings import HOST, PORT
@@ -55,6 +56,8 @@ def on_message(client, userdata, msg):
     if msg.topic == "uds":
         save_uds_data(payload, influxdb_client)
     elif msg.topic == "button":
+        if payload["code"] == "BUTTON_5_SEC":
+            mqtt_client.publish("alarm-on",  "ALARM")
         save_button_data(payload, influxdb_client)
     elif msg.topic == "buzzer":
         save_buzzer_data(payload, influxdb_client)
