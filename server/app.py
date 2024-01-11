@@ -141,6 +141,11 @@ def on_message(client, userdata, msg):
 
                 print("People inside: ", people_inside)
 
+        if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload['name'] == 'RPIR4':
+            if people_inside == 0:
+                msg = json.dumps({"alarm": "on"})
+                mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+
     elif msg.topic == "gyro":
         save_gyro_data(payload, influxdb_client)
 
@@ -154,7 +159,7 @@ def on_message(client, userdata, msg):
             mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
 
         if rotation < -175 or rotation > 175:
-            msg = json.dumps({"event": "turn-on"})
+            msg = json.dumps({"alarm": "on"})
             mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
 
     elif msg.topic == "lcd":
