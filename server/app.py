@@ -21,7 +21,7 @@ influxdb_client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 
 
 def on_connect(client, userdata, flags, rc):
-    topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss"]
+    topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss", "ir"]
 
     if rc == 0:
         print("Connected to MQTT broker")
@@ -64,6 +64,8 @@ def on_message(client, userdata, msg):
         save_diode_data(payload, influxdb_client)
     elif msg.topic == "dms":
         save_dms_data(payload, influxdb_client)
+    elif msg.topic == "ir":
+        save_ir_data(payload, influxdb_client)
     elif msg.topic == "pir":
         save_pir_data(payload, influxdb_client)
 

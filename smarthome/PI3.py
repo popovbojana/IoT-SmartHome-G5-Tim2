@@ -8,6 +8,7 @@ from components.pir import run_pir
 from components.buzzer import run_buzzer
 from components.fdss import run_fdss
 from components.rgb_led import run_rgb_led
+from components.ir import run_ir
 from settings.settings import print_lock
 from settings.broker_settings import HOST, PORT
 
@@ -47,7 +48,8 @@ def menu_actuators(settings, threads, stop_event):
                     print("**** ACTUATOR MENU ****")
                     print("1) Enter 1 to buzz\n"
                           "2) Enter 2 for RGB\n"
-                          "3) Enter 3 to exit\n")
+                          "3) Enter 3 for IR Receiver\n"
+                          "4) Enter 4 to exit\n")
                     option = input("Enter: ")
                     if option == "1":
                         bb_settings = settings['Bedroom Buzzer'][0]
@@ -63,6 +65,14 @@ def menu_actuators(settings, threads, stop_event):
                             run_rgb_led(brgb_settings, threads, stop_event, color)
                             time.sleep(1)
                     elif option == "3":
+                        ir_settings = settings['Bedroom Infrared'][0]
+                        ir_button = input("Enter (LEFT, RIGHT, UP, DOWN, 2, 3, 1, OK, 4, 5, 6, 7, 8, 9, *, 0, #) to select command: ")
+                        if ir_button.upper() not in ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0", "#"]:
+                            break
+                        else:
+                            run_ir(ir_settings, threads, stop_event, ir_button)
+                            time.sleep(1)
+                    elif option == "4":
                         print("Exiting the menu. Printing is resumed.")
                         break
 
