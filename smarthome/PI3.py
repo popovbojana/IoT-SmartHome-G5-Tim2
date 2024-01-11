@@ -1,4 +1,5 @@
 import threading
+import time
 import paho.mqtt.client as mqtt
 
 from settings.settings import load_settings
@@ -8,9 +9,8 @@ from components.buzzer import run_buzzer
 from components.fdss import run_fdss
 from components.rgb_led import run_rgb_led
 from settings.settings import print_lock
-from settings.settings import load_mqtt_config
+from settings.broker_settings import HOST, PORT
 
-import time
 
 try:
     import RPi.GPIO as GPIO
@@ -78,16 +78,27 @@ def run_displays(settings, threads, stop_event):
     run_fdss(b4sd_settings, threads, stop_event)
 
 
-topics = ['rgb_commands', 'alarm-on', 'alarm-off', 'system-on', 'system-off']
-all_topics_subscribed = threading.Event()
-
 alarm_event = threading.Event()
 system_event = threading.Event()
 
 
+def on_connect(client, userdata, flags, rc):
+    topics = ['rgb_commands', 'alarm-on', 'alarm-off', 'system-on', 'system-off']
+
+    if rc == 0:
+        print("Connected to MQTT broker")
+
+        for topic in topics:
+            client.subscribe(topic)
+            print("Subscribed to: " + topic)
+
+    else:
+        print(f"Connection failed with code {rc}")
+
+
 def on_message(client, userdata, msg):
     if msg.topic == 'rgb_commands':
-        print("ASD")
+        pass
     elif msg.topic == 'alarm-on':
         pass
     elif msg.topic == 'alarm-off':
@@ -98,41 +109,20 @@ def on_message(client, userdata, msg):
         pass
 
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Connected PI3 to MQTT broker\n")
-
-        for topic in topics:
-            client.subscribe(topic)
-            print("Subscribed to: " + topic)
-        all_topics_subscribed.set()
-
-
-    else:
-        print(f"Connection failed with code {rc}")
-
-
-def mqtt_subscribe():
-    mqtt_config = load_mqtt_config()
-    client = mqtt.Client()
-    client.username_pw_set(username=mqtt_config['username'], password=mqtt_config['password'])
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.connect(mqtt_config['host'], mqtt_config['port'], 60)
-    client.loop_forever()
-
-
 if __name__ == "__main__":
     print('Starting PI3...')
     settings_pi3 = load_settings('settings/settings_pi3.json')
     threads_pi3 = []
     stop_event_pi3 = threading.Event()
 
-    mqtt_thread = threading.Thread(target=mqtt_subscribe)
-    mqtt_thread.start()
-    all_topics_subscribed.wait()
+    # MQTT Config
+    mqtt_client = mqtt.Client()
+    mqtt_client.connect(HOST, PORT, 60)
+    mqtt_client.loop_start()
 
-    print()
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_message = lambda client, userdata, msg: on_message(client, userdata, msg)
+
     try:
         run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
         run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
