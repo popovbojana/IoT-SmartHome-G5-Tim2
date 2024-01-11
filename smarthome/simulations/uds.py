@@ -2,37 +2,22 @@ import time
 import random
 
 
-def generate_values(initial_distance=100):
-    distance = initial_distance
-    TRIG_PIN = False
-    ECHO_PIN = False
-    decreasing = True
-
+def generate_values():
     while True:
-        if not TRIG_PIN:
-            TRIG_PIN = True
-            ECHO_PIN = False
+        decreasing = random.choice([True, False])
+        distance = 10 if decreasing else 0
+
+        while True:
+            yield distance
 
             if decreasing:
-                distance -= random.uniform(5, 15)
+                distance -= 1
+                if distance == 0:
+                    break
             else:
-                distance += random.uniform(5, 15)
-
-            if distance <= 0:
-                decreasing = False
-                distance = 0
-            if distance >= 100:
-                decreasing = True
-                distance = 100
-
-        if TRIG_PIN and not ECHO_PIN:
-            ECHO_PIN = True
-
-        if TRIG_PIN and ECHO_PIN:
-            TRIG_PIN = False
-            ECHO_PIN = False
-
-        yield distance
+                distance += 1
+                if distance == 10:
+                    break
 
 
 def run_uds_simulator(delay, callback, stop_event, settings, publish_event):
