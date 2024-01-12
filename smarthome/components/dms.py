@@ -8,7 +8,7 @@ import json
 mqtt_config = load_mqtt_config()
 dms_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 
@@ -31,7 +31,7 @@ publisher_thread.daemon = True
 publisher_thread.start()
 
 
-def dms_callback(key, code, settings, publish_event):
+def dms_callback(key, settings, publish_event, system_event):
     global publish_data_counter, publish_data_limit
 
     # t = time.localtime()
@@ -57,20 +57,15 @@ def dms_callback(key, code, settings, publish_event):
         publish_event.set()
 
 
-def run_dms(settings, threads, stop_event):
+def run_dms(key, settings, threads, stop_event, system_event):
     if settings['simulated']:
-        print(f"Starting {settings['name']} loop")
-        dms_thread = threading.Thread(target=run_dms_simulator, args=(2, dms_callback, stop_event, settings,
-                                                                      publish_event))
+        dms_thread = threading.Thread(target=dms_callback, args=(key, settings, publish_event, system_event))
         dms_thread.start()
         threads.append(dms_thread)
-        print(f"{settings['name']} simulator started")
     else:
         from sensors.dms import run_dms_loop, DMS
-        print(f"Starting {settings['name']} loop")
         dms = DMS(settings['name'], settings['row_pins'], settings['col_pins'])
         dms_thread = threading.Thread(target=run_dms_loop, args=(dms, 2, dms_callback, stop_event, settings,
                                                                  publish_event))
         dms_thread.start()
         threads.append(dms_thread)
-        print(f"{settings['name']} loop started")

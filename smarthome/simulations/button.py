@@ -4,7 +4,7 @@ import random
 
 def generate_values():
     while True:
-        yield random.randint(3, 6)
+        yield random.randint(1, 6)
 
 
 def run_button_simulator(delay, callback, stop_event, settings, publish_event, alarm_event):

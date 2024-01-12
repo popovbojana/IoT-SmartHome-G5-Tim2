@@ -55,10 +55,10 @@ def diode_callback(on, code, settings, publish_event):
         publish_data_counter += 1
 
     if settings['simulated']:
-        print("Light is on")
+        # print("Light is on")
         time.sleep(10)
         on = False
-        print("Light is off")
+        # print("Light is off")
 
         message = {
             "pi": settings['pi'],

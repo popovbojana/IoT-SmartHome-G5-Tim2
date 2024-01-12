@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 
 from flask import Flask, jsonify
@@ -16,6 +17,9 @@ people_inside_lock = Lock()
 app = Flask(__name__)
 
 people_inside = 0
+pin_code = ['0','0','0','0']
+system_on = False
+alarm_on = False
 
 # InfluxDB Config
 influxdb_client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
@@ -45,6 +49,8 @@ mqtt_client.loop_start()
 
 def on_message(client, userdata, msg):
     global people_inside
+    global system_on
+    global alarm_on
 
     try:
         payload = json.loads(msg.payload.decode())
@@ -56,8 +62,12 @@ def on_message(client, userdata, msg):
     if msg.topic == "uds":
         save_uds_data(payload, influxdb_client)
     elif msg.topic == "button":
-        if payload["code"] == "BUTTON_5_SEC":
-            mqtt_client.publish("alarm-on",  "ALARM")
+        # print(payload)
+        if (payload["code"] == "BUTTON_5_SEC") and (alarm_on is not True) and (system_on is True):
+            msg = json.dumps({"event": "alarm-on"})
+            mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+            alarm_on = True
+            print("BUTTON ENTERED IF")
         save_button_data(payload, influxdb_client)
     elif msg.topic == "buzzer":
         save_buzzer_data(payload, influxdb_client)
@@ -66,6 +76,24 @@ def on_message(client, userdata, msg):
     elif msg.topic == "diode":
         save_diode_data(payload, influxdb_client)
     elif msg.topic == "dms":
+        print(payload)
+        key_list = [str(p) for p in pin_code]
+        key = payload['key']
+        if ',' in key:
+            list = key.split(',')
+            check_key_list = [l.strip() for l in list]
+            if key_list == check_key_list:
+                if system_on:
+                    mqtt_client.publish("system-off", "SYSTEM-OFF")
+                    system_on = False
+                    if alarm_on:
+                        mqtt_client.publish("alarm-off", "ALARM-OFF")
+                        alarm_on = False
+                else:
+                    time.sleep(10)
+                    mqtt_client.publish("system-on", "SYSTEM_ON")
+                    system_on = True
+
         save_dms_data(payload, influxdb_client)
     elif msg.topic == "ir":
         save_ir_data(payload, influxdb_client)
