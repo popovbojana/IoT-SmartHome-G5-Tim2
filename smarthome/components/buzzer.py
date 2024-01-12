@@ -1,11 +1,10 @@
 import threading
 import time
-from settings.settings import load_mqtt_config
 from simulations.buzzer import run_buzzer_simulator
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.broker_settings import HOST, PORT
 
-mqtt_config = load_mqtt_config()
 buzzer_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -20,8 +19,7 @@ def publisher_task(event, buzzer_batch):
             local_buzzer_batch = buzzer_batch.copy()
             publish_data_counter = 0
             buzzer_batch.clear()
-        mqtt_publish.multiple(local_buzzer_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_buzzer_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -53,7 +51,7 @@ def buzzer_callback(duration, code, settings, publish_event):
     }
 
     with counter_lock:
-        buzzer_batch.append(('buzzer', json.dumps(message), 0, True))
+        buzzer_batch.append(('buzzer', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:

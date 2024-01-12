@@ -1,12 +1,10 @@
 import time
 from datetime import datetime, timedelta
 
-from flask import Flask, jsonify
+from flask import Flask
 import json
 import paho.mqtt.client as mqtt
-import paho.mqtt.publish as mqtt_publish
 from influxdb_client import InfluxDBClient
-import paho.mqtt.publish as mqtt_publish
 from settings.broker_settings import HOST, PORT
 from settings.influx_settings import TOKEN, ORG, URL
 from save_to_influx import *
@@ -65,7 +63,7 @@ def on_message(client, userdata, msg):
         # print(payload)
         if (payload["code"] == "BUTTON_5_SEC") and (alarm_on is not True) and (system_on is True):
             msg = json.dumps({"event": "alarm-on-button", "time": payload["timestamp"]})
-            mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+            mqtt_client.publish("alarm-on", payload=msg)
             alarm_on = True
             print("BUTTON ENTERED IF")
         save_button_data(payload, influxdb_client)
@@ -85,16 +83,16 @@ def on_message(client, userdata, msg):
             if key_list == check_key_list:
                 if system_on:
                     msg = json.dumps({"event": "system-off"})
-                    mqtt_publish.single("system-off", payload=msg, hostname=HOST, port=PORT)
+                    mqtt_client.publish("system-off", payload=msg)
                     system_on = False
                     if alarm_on:
                         msg = json.dumps({"event": "alarm-off"})
-                        mqtt_publish.single("alarm-off", payload=msg, hostname=HOST, port=PORT)
+                        mqtt_client.publish("alarm-off", payload=msg)
                         alarm_on = False
                 else:
                     time.sleep(10)
                     msg = json.dumps({"event": "system-on"})
-                    mqtt_publish.single("system-on", payload=msg, retain=False, hostname=HOST, port=PORT)
+                    mqtt_client.publish("system-on", payload=msg)
                     system_on = True
 
         save_dms_data(payload, influxdb_client)
@@ -105,7 +103,7 @@ def on_message(client, userdata, msg):
 
         if payload["name"] == "DPIR1":
             msg = json.dumps({"event": "turn-on"})
-            mqtt_publish.single("dpir1-light-on", payload=msg, hostname=HOST, port=PORT)
+            mqtt_client.publish("dpir1-light-on", payload=msg)
 
             event_timestamp = payload["timestamp"]
             if not isinstance(event_timestamp, datetime):
@@ -176,7 +174,7 @@ def on_message(client, userdata, msg):
             'name'] == 'RPIR4':
             if people_inside == 0 and (alarm_on is not True) and (system_on is True):
                 msg = json.dumps({"event": "alarm-on-" + payload['name']})
-                mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+                mqtt_client.publish("alarm-on", payload=msg)
                 print("ALARM ", payload['name'])
 
     elif msg.topic == "gyro":
@@ -190,12 +188,12 @@ def on_message(client, userdata, msg):
         if acceleration < -9.5 or acceleration > 9.5:
             if (alarm_on is not True) and (system_on is True):
                 msg = json.dumps({"event": "alarm-on-gyro"})
-                mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+                mqtt_client.publish("alarm-on", payload=msg)
 
         if rotation < -175 or rotation > 175:
             if (alarm_on is not True) and (system_on is True):
                 msg = json.dumps({"event": "alarm-on-gyro"})
-                mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
+                mqtt_client.publish("alarm-on", payload=msg)
 
     elif msg.topic == "lcd":
         save_lcd_data(payload, influxdb_client)

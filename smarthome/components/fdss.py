@@ -1,11 +1,10 @@
 from simulations.fdss import run_fdss_simulator
 import threading
 import time
-from settings.settings import print_lock, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.broker_settings import HOST, PORT
 
-mqtt_config = load_mqtt_config()
 fdss_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -20,8 +19,7 @@ def publisher_task(event, fdss_batch):
             local_fdss_batch = fdss_batch.copy()
             publish_data_counter = 0
             fdss_batch.clear()
-        mqtt_publish.multiple(local_fdss_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_fdss_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -52,7 +50,7 @@ def fdss_callback(alarm_time, binary, code, settings, publish_event):
     }
 
     with counter_lock:
-        fdss_batch.append(('fdss', json.dumps(message), 0, True))
+        fdss_batch.append(('fdss', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:

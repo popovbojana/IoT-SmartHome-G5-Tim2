@@ -1,11 +1,10 @@
 from simulations.pir import run_pir_simulator
 import threading
 import time
-from settings.settings import print_lock, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.broker_settings import HOST, PORT
 
-mqtt_config = load_mqtt_config()
 pir_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -20,8 +19,7 @@ def publisher_task(event, pir_batch):
             local_pir_batch = pir_batch.copy()
             publish_data_counter = 0
             pir_batch.clear()
-        mqtt_publish.multiple(local_pir_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_pir_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -50,7 +48,7 @@ def pir_callback(motion, detected, code, settings, publish_event):
     }
 
     with counter_lock:
-        pir_batch.append(('pir', json.dumps(message), 0, True))
+        pir_batch.append(('pir', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:
