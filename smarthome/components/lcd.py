@@ -34,12 +34,12 @@ publisher_thread.start()
 def lcd_callback(display, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
-    # t = time.localtime()
-    # print()
-    # print("*" * 5 + settings['name'] + "*" * 5)
-    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    # print(f"Code: {code}")
-    # print(f"Display: {display}")
+    t = time.localtime()
+    print()
+    print("*" * 5 + settings['name'] + "*" * 5)
+    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    print(f"Code: {code}")
+    print(f"Display: {display}")
 
     message = {
         "pi": settings['pi'],
@@ -57,20 +57,15 @@ def lcd_callback(display, code, settings, publish_event):
         publish_event.set()
 
 
-def run_lcd(settings, threads, stop_event):
+def run_lcd(display, settings, threads, stop_event):
     if settings['simulated']:
-        print(f"Starting {settings['name']} simulator")
-        lcd_thread = threading.Thread(target=run_lcd_simulator, args=(2, lcd_callback, stop_event, settings,
-                                                                      publish_event))
+        lcd_thread = threading.Thread(target=lcd_callback, args=(display, "LCD_OK",  settings, publish_event))
         lcd_thread.start()
         threads.append(lcd_thread)
-        print(f"{settings['name']} simulator started")
     else:
         from displays.lcd.Adafruit_LCD1602 import run_lcd_loop, Adafruit_CharLCD
-        print(f"Starting {settings['name']} loop")
         lcd = Adafruit_CharLCD(settings['name'], settings['pin_rs'], settings['pin_e'], settings['pins_db'])
-        lcd_thread = threading.Thread(target=run_lcd_loop, args=(lcd, 2, lcd_callback, stop_event, settings,
+        lcd_thread = threading.Thread(target=run_lcd_loop, args=(display, lcd, 2, lcd_callback, stop_event, settings,
                                                                  publish_event))
         lcd_thread.start()
         threads.append(lcd_thread)
-        print(f"{settings['name']} loop started")

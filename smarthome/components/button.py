@@ -58,11 +58,11 @@ def button_callback(pushed, unlocked, code, settings, publish_event):
         publish_event.set()
 
 
-def run_button(settings, threads, stop_event, alarm_event):
+def run_button(settings, threads, stop_event):
     if settings['simulated']:
         print(f"Starting {settings['name']} loop")
         button_thread = threading.Thread(target=run_button_simulator, args=(2, button_callback, stop_event, settings,
-                                                                            publish_event, alarm_event))
+                                                                            publish_event))
         button_thread.start()
         threads.append(button_thread)
         print(f"{settings['name']} simulator started")
@@ -71,7 +71,7 @@ def run_button(settings, threads, stop_event, alarm_event):
         print(f"Starting {settings['name']} loop")
         button = Button(settings['name'], settings['pin'])
         button_thread = threading.Thread(target=run_button_loop, args=(button, 2, button_callback, stop_event, settings,
-                                                                       publish_event, alarm_event))
+                                                                       publish_event))
         button_thread.start()
         threads.append(button_thread)
         print(f"{settings['name']} loop started")

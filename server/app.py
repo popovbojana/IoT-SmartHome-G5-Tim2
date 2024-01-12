@@ -17,7 +17,7 @@ people_inside_lock = Lock()
 app = Flask(__name__)
 
 people_inside = 0
-pin_code = ['0','0','0','0']
+pin_code = ['0', '0', '0', '0']
 system_on = False
 alarm_on = False
 
@@ -67,12 +67,21 @@ def on_message(client, userdata, msg):
             msg = json.dumps({"event": "alarm-on"})
             mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
             alarm_on = True
-            print("BUTTON ENTERED IF")
         save_button_data(payload, influxdb_client)
+
     elif msg.topic == "buzzer":
         save_buzzer_data(payload, influxdb_client)
+
     elif msg.topic == "dht":
+        message = {
+            "display": ("Humidity: " + str(payload['humidity']) + "\n" +
+                        "Temperature: " + str(payload['temperature']))
+        }
+
+        msg = json.dumps(message)
+        mqtt_publish.single("lcd-display", payload=msg, hostname=HOST, port=PORT)
         save_dht_data(payload, influxdb_client)
+
     elif msg.topic == "diode":
         save_diode_data(payload, influxdb_client)
     elif msg.topic == "dms":
@@ -169,7 +178,8 @@ def on_message(client, userdata, msg):
 
                 print("People inside: ", people_inside)
 
-        if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload['name'] == 'RPIR4':
+        if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
+            'name'] == 'RPIR4':
             if people_inside == 0:
                 msg = json.dumps({"alarm": "on"})
                 mqtt_publish.single("alarm-on", payload=msg, hostname=HOST, port=PORT)
