@@ -146,3 +146,11 @@ def save_alarm_data(state, timestamp, client):
 
     write_api = client.write_api(write_options=SYNCHRONOUS)
     write_api.write(bucket=BUCKET, org=ORG, record=point)
+
+
+def save_people_data(number, timestamp, client):
+    point = Point("people_data").time(int(timestamp), WritePrecision.S)
+    point.field("inside", number)
+
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+    write_api.write(bucket=BUCKET, org=ORG, record=point)

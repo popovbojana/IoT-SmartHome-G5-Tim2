@@ -201,6 +201,7 @@ def on_message(client, userdata, msg):
                             pass
 
                 print("People inside: ", people_inside)
+                save_people_data(people_inside, time.time(), influxdb_client)
 
         if payload["name"] == "DPIR2":
             event_timestamp = payload["timestamp"]
@@ -234,6 +235,7 @@ def on_message(client, userdata, msg):
                             pass
 
                 print("People inside: ", people_inside)
+                save_people_data(people_inside, time.time(), influxdb_client)
 
         if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
             'name'] == 'RPIR4':
