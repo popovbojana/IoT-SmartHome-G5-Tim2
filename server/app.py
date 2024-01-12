@@ -77,7 +77,7 @@ def on_message(client, userdata, msg):
         }
 
         msg = json.dumps(message)
-        mqtt_publish.single("lcd-display", payload=msg, hostname=HOST, port=PORT)
+        mqtt_client.publish("lcd-display", payload=msg)
         save_dht_data(payload, influxdb_client)
 
     elif msg.topic == "diode":
