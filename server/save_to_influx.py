@@ -139,3 +139,10 @@ def save_ir_data(payload, client):
     write_api = client.write_api(write_options=SYNCHRONOUS)
     write_api.write(bucket=BUCKET, org=ORG, record=point)
 
+
+def save_alarm_data(state, timestamp, client):
+    point = Point("alarm_data").time(int(timestamp), WritePrecision.S)
+    point.field("on", state)
+
+    write_api = client.write_api(write_options=SYNCHRONOUS)
+    write_api.write(bucket=BUCKET, org=ORG, record=point)
