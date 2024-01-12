@@ -39,7 +39,7 @@ def run_sensors(settings, threads, stop_event):
     run_pir(dpir1_settings, threads, stop_event)
     run_pir(rpir1_settings, threads, stop_event)
     run_pir(rpir2_settings, threads, stop_event)
-    run_button(ds1_settings, threads, stop_event, alarm_event)
+    run_button(ds1_settings, threads, stop_event)
     run_buzzer(db_settings, threads, stop_event, alarm_event, system_event)
 
 

@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 import paho.mqtt.client as mqtt
@@ -37,14 +38,7 @@ def run_sensors(settings, threads, stop_event):
     run_gyro(gsg_settings, threads, stop_event)
 
 
-def run_displays(settings, threads, stop_event):
-    glcd_settings = settings['Garage LCD'][0]
-
-    run_lcd(glcd_settings, threads, stop_event)
-
-
 system_event = threading.Event()
-
 
 def on_connect(client, userdata, flags, rc):
     topics = ['lcd-display', 'system-on', 'system-off']
@@ -61,12 +55,22 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    try:
+        payload = json.loads(msg.payload.decode())
+        # print(payload)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        print(f"Invalid payload: {msg.payload}")
+        return
+
     if msg.topic == 'lcd-display':
-        print("ASD")
+        display = payload['display']
+        glcd_settings = settings_pi2['Garage LCD'][0]
+        run_lcd(display, glcd_settings, threads_pi2, stop_event_pi2)
     elif msg.topic == 'system-on':
-        pass
+        system_event.set()
     elif msg.topic == 'system-off':
-        pass
+        system_event.clear()
 
 
 if __name__ == "__main__":
@@ -84,7 +88,7 @@ if __name__ == "__main__":
 
     try:
         run_sensors(settings_pi2, threads_pi2, stop_event_pi2)
-        run_displays(settings_pi2, threads_pi2, stop_event_pi2)
+        # run_displays(settings_pi2, threads_pi2, stop_event_pi2)
 
         while True:
             time.sleep(1)

@@ -65,12 +65,21 @@ def on_message(client, userdata, msg):
             msg = json.dumps({"event": "alarm-on-button", "time": payload["timestamp"]})
             mqtt_client.publish("alarm-on", payload=msg)
             alarm_on = True
-            print("BUTTON ENTERED IF")
         save_button_data(payload, influxdb_client)
+
     elif msg.topic == "buzzer":
         save_buzzer_data(payload, influxdb_client)
+
     elif msg.topic == "dht":
+        message = {
+            "display": ("Humidity: " + str(payload['humidity']) + "\n" +
+                        "Temperature: " + str(payload['temperature']))
+        }
+
+        msg = json.dumps(message)
+        mqtt_publish.single("lcd-display", payload=msg, hostname=HOST, port=PORT)
         save_dht_data(payload, influxdb_client)
+
     elif msg.topic == "diode":
         save_diode_data(payload, influxdb_client)
     elif msg.topic == "dms":

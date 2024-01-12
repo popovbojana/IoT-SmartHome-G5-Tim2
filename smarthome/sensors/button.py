@@ -20,7 +20,7 @@ class Button:
         return self.pushed
 
 
-def run_button_loop(button, delay, callback, stop_event, settings, publish_event, switch_event, alarm_event):
+def run_button_loop(button, delay, callback, stop_event, settings, publish_event, switch_event):
     while True:
         switch_event.wait()
 
@@ -34,7 +34,6 @@ def run_button_loop(button, delay, callback, stop_event, settings, publish_event
 
                 if elapsed_time > 5:
                     callback("Door is unlocked", True, "BUTTON_5_SEC", settings, publish_event)
-                    alarm_event.set()
 
         time.sleep(delay)
         switch_event.clear()

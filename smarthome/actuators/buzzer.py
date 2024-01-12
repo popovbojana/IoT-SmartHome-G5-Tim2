@@ -10,7 +10,6 @@ class BUZZER:
         self.pitch = 440
         GPIO.setup(self.pin, GPIO.OUT)
 
-    # def buzz(self, pitch, duration)
     def buzz(self):
         period = 1.0 / self.pitch
         delay = period / 2

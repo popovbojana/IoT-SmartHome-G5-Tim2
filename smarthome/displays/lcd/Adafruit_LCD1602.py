@@ -196,10 +196,8 @@ class Adafruit_CharLCD(object):
                 self.write4bits(ord(char), True)
 
 
-def run_lcd_loop(lcd, delay, callback, stop_event, settings, publish_event):
-    display = ''
-    while display != 'cancel':
-        display = input("Enter what you want to show on LCD(16x2): ")
+def run_lcd_loop(display, lcd, delay, callback, stop_event, settings, publish_event):
+    while True:
         lcd.clear()
         lcd.message(str(display))
         callback(str(display), "LCD_OK", settings, publish_event)

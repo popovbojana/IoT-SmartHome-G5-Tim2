@@ -7,7 +7,7 @@ def generate_values():
         yield random.randint(1, 6)
 
 
-def run_button_simulator(delay, callback, stop_event, settings, publish_event, alarm_event):
+def run_button_simulator(delay, callback, stop_event, settings, publish_event):
     for pushed in generate_values():
         time.sleep(delay)
 
