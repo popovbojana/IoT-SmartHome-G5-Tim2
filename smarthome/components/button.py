@@ -3,9 +3,9 @@ import threading
 import time
 import paho.mqtt.publish as mqtt_publish
 import json
-from settings.settings import load_mqtt_config
+from settings.broker_settings import HOST, PORT
 
-mqtt_config = load_mqtt_config()
+
 button_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -20,8 +20,7 @@ def publisher_task(event, button_batch):
             local_button_batch = button_batch.copy()
             publish_data_counter = 0
             button_batch.clear()
-        mqtt_publish.multiple(local_button_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_button_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -51,7 +50,7 @@ def button_callback(pushed, unlocked, code, settings, publish_event):
     }
 
     with counter_lock:
-        button_batch.append(('button', json.dumps(message), 0, True))
+        button_batch.append(('button', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:

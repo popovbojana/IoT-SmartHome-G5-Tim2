@@ -1,13 +1,12 @@
 import threading
 import time
-from settings.settings import load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.broker_settings import HOST, PORT
 
 
 state = False
 
-mqtt_config = load_mqtt_config()
 diode_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -22,8 +21,7 @@ def publisher_task(event, diode_batch):
             local_diode_batch = diode_batch.copy()
             publish_data_counter = 0
             diode_batch.clear()
-        mqtt_publish.multiple(local_diode_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_diode_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -51,7 +49,7 @@ def diode_callback(on, code, settings, publish_event):
         "light_state": on,
     }
     with counter_lock:
-        diode_batch.append(('diode', json.dumps(message), 0, True))
+        diode_batch.append(('diode', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if settings['simulated']:
@@ -68,7 +66,7 @@ def diode_callback(on, code, settings, publish_event):
             "light_state": on,
         }
         with counter_lock:
-            diode_batch.append(('diode', json.dumps(message), 0, True))
+            diode_batch.append(('diode', json.dumps(message), 0, False))
             publish_data_counter += 1
 
 

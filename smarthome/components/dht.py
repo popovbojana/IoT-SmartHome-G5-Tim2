@@ -1,11 +1,10 @@
 from simulations.dht import run_dht_simulator
 import threading
 import time
-from settings.settings import print_lock, load_mqtt_config
 import paho.mqtt.publish as mqtt_publish
 import json
+from settings.broker_settings import HOST, PORT
 
-mqtt_config = load_mqtt_config()
 dht_batch = []
 publish_data_counter = 0
 publish_data_limit = 5
@@ -20,8 +19,7 @@ def publisher_task(event, dht_batch):
             local_dht_batch = dht_batch.copy()
             publish_data_counter = 0
             dht_batch.clear()
-        mqtt_publish.multiple(local_dht_batch, hostname=mqtt_config['host'], port=mqtt_config['port'],
-                              auth={"username": mqtt_config['username'], "password": mqtt_config['password']})
+        mqtt_publish.multiple(local_dht_batch, hostname=HOST, port=PORT)
         event.clear()
 
 
@@ -52,7 +50,7 @@ def dht_callback(humidity, temperature, code, settings, publish_event):
     }
 
     with counter_lock:
-        dht_batch.append(('dht', json.dumps(message), 0, True))
+        dht_batch.append(('dht', json.dumps(message), 0, False))
         publish_data_counter += 1
 
     if publish_data_counter >= publish_data_limit:
