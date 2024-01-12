@@ -105,7 +105,42 @@ def on_message(client, userdata, msg):
                     system_on = True
 
         save_dms_data(payload, influxdb_client)
+
     elif msg.topic == "ir":
+
+        print(payload)
+        if payload['button'] == "0":
+            msg = json.dumps({"command": "OFF"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "1":
+            msg = json.dumps({"command": "WHITE"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "2":
+            msg = json.dumps({"command": "RED"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "3":
+            msg = json.dumps({"command": "GREEN"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "4":
+            msg = json.dumps({"command": "BLUE"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "5":
+            msg = json.dumps({"command": "YELLOW"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "6":
+            msg = json.dumps({"command": "PURPLE"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
+        elif payload['button'] == "7":
+            msg = json.dumps({"command": "LIGHT_BLUE"})
+            mqtt_client.publish("rgb_commands", payload=msg)
+
         save_ir_data(payload, influxdb_client)
     elif msg.topic == "pir":
         save_pir_data(payload, influxdb_client)
