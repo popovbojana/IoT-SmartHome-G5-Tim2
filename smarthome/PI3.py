@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 import paho.mqtt.client as mqtt
@@ -107,8 +108,19 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    try:
+        payload = json.loads(msg.payload.decode())
+        # print(payload)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        print(f"Invalid payload: {msg.payload}")
+        return
+
     if msg.topic == 'rgb_commands':
-        pass
+        command = payload['command']
+        brgb_settings = settings_pi3['Bedroom RGB'][0]
+        run_rgb_led(command, brgb_settings, threads_pi3, stop_event_pi3)
+
     elif msg.topic == 'alarm-on':
         pass
     elif msg.topic == 'alarm-off':

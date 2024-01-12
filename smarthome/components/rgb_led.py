@@ -57,15 +57,15 @@ def rgb_led_callback(state, code, settings, publish_event):
         publish_event.set()
 
 
-def run_rgb_led(settings, threads, stop_event, state):
+def run_rgb_led(command, settings, threads, stop_event):
     if settings['simulated']:
-        rgb_led_thread = threading.Thread(target=rgb_led_callback, args=(state, "RGB_" + state, settings, publish_event))
+        rgb_led_thread = threading.Thread(target=rgb_led_callback, args=(command, "RGB_" + command, settings, publish_event))
         rgb_led_thread.start()
         threads.append(rgb_led_thread)
     else:
         from actuators.rgb_led import run_rgb_loop, RGB_LED
         rgb_led = RGB_LED(settings['name'], settings['red_pin'], settings['green_pin'], settings['blue_pin'])
-        rgb_led_thread = threading.Thread(target=run_rgb_loop, args=(rgb_led, 2, rgb_led_callback, stop_event, settings,
+        rgb_led_thread = threading.Thread(target=run_rgb_loop, args=(command, rgb_led, 2, rgb_led_callback, stop_event, settings,
                                                                     publish_event))
         rgb_led_thread.start()
         threads.append(rgb_led_thread)
