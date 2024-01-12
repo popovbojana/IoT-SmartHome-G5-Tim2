@@ -1,5 +1,5 @@
-# TOKEN = "mvuvk4gZwyQ1cSV66lq40FDDg9MCnNpvRwNpbZMFgP-o3Y_QZ__gKEhAXRDP2KSh6Hl7dRINf17NpwKwfpYn3g=="
-TOKEN = "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
+TOKEN = "mvuvk4gZwyQ1cSV66lq40FDDg9MCnNpvRwNpbZMFgP-o3Y_QZ__gKEhAXRDP2KSh6Hl7dRINf17NpwKwfpYn3g=="
+# TOKEN = "2y_saeDWgOVQrh3S7QVarIImp-W---5lc_0giPs8xn1tzQjOGXxNT9tuF8YrovtLMNxQsdyQvSOCtP61h0d2UQ=="
 ORG = "nwt"
 URL = "http://localhost:8086"
 BUCKET = "iot"

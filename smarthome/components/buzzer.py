@@ -36,12 +36,12 @@ def buzzer_callback(duration, code, settings, publish_event):
 
     pitch = 440
     t = time.localtime()
-    print()
-    print("*" * 5 + settings['name'] + "*" * 5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    # print(f"Pitch: {pitch}")
-    print(f"Duration: {duration} sec")
+    # print()
+    # print("*" * 5 + settings['name'] + "*" * 5)
+    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    # print(f"Code: {code}")
+    # # print(f"Pitch: {pitch}")
+    # print(f"Duration: {duration} sec")
 
     message = {
         "pi": settings['pi'],
