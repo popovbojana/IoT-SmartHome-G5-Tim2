@@ -1,3 +1,4 @@
+import json
 import threading
 import time
 import paho.mqtt.client as mqtt
@@ -98,12 +99,18 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    try:
+        payload = json.loads(msg.payload.decode())
+        # print(payload)
+    except json.decoder.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        return
     if msg.topic == 'dpir1-light-on':
         dl_settings = settings_pi1['Door Light'][0]
         run_diode(dl_settings, threads_pi1, stop_event_pi1)
     elif msg.topic == 'alarm-on':
         alarm_event.set()
-        print("ALARM ON")
+        print(payload)
     elif msg.topic == 'alarm-off':
         alarm_event.clear()
         print("ALARM OFF")
