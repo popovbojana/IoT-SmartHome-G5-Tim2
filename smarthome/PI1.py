@@ -40,7 +40,7 @@ def run_sensors(settings, threads, stop_event):
     run_pir(rpir1_settings, threads, stop_event)
     run_pir(rpir2_settings, threads, stop_event)
     run_button(ds1_settings, threads, stop_event)
-    run_buzzer(db_settings, threads, stop_event, alarm_event, system_event)
+    run_buzzer(db_settings, threads, stop_event, alarm_event, system_event, alarm_clock_event)
 
 
 def run_actuators(settings, threads, stop_event):
@@ -83,6 +83,8 @@ def menu_actuators(settings, threads, stop_event):
 
 alarm_event = threading.Event()
 system_event = threading.Event()
+alarm_clock_event = threading.Event()
+
 
 def on_connect(client, userdata, flags, rc):
     topics = ['dpir1-light-on', 'alarm-on', 'alarm-off', 'system-on', 'system-off']

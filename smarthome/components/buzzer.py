@@ -7,7 +7,7 @@ from settings.broker_settings import HOST, PORT
 
 buzzer_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 
@@ -58,10 +58,11 @@ def buzzer_callback(duration, code, settings, publish_event):
         publish_event.set()
 
 
-def run_buzzer(settings, threads, stop_event, alarm_event, system_event):
+def run_buzzer(settings, threads, stop_event, alarm_event, system_event, alarm_clock_event):
     if settings['simulated']:
-        buzzer_thread = threading.Thread(target=run_buzzer_simulator, args=(buzzer_callback, stop_event,
-                                                                            settings, publish_event, alarm_event, system_event))
+        buzzer_thread = threading.Thread(target=run_buzzer_simulator, args=(buzzer_callback, stop_event, settings,
+                                                                            publish_event, alarm_event, system_event,
+                                                                            alarm_clock_event))
         buzzer_thread.start()
         threads.append(buzzer_thread)
     else:

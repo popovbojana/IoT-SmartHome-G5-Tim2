@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask
 import json
 import paho.mqtt.client as mqtt
@@ -19,12 +19,28 @@ pin_code = ['0', '0', '0', '0']
 system_on = False
 alarm_on = False
 
+alarm_clock_times = []
+alarm_clock_on = False
+
 # InfluxDB Config
 influxdb_client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
+scheduler = BackgroundScheduler()
+
+
+def check_and_trigger_alarms():
+    global alarm_clock_times, alarm_clock_on
+
+    current_time = time.strftime('%H:%M')
+    if current_time in alarm_clock_times and not alarm_clock_on:
+        print("BUDILNIK")
+        msg = json.dumps({"event": "alarm-on"})
+        mqtt_client.publish("alarm-clock-server", payload=msg)
+        alarm_clock_on = True
 
 
 def on_connect(client, userdata, flags, rc):
-    topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss", "ir"]
+    topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss", "ir",
+              "alarm-clock-pi"]
 
     if rc == 0:
         print("Connected to MQTT broker")
@@ -32,6 +48,9 @@ def on_connect(client, userdata, flags, rc):
         for topic in topics:
             client.subscribe(topic)
             print("Subscribed to: " + topic)
+
+        scheduler.add_job(check_and_trigger_alarms, 'interval', seconds=10)
+        scheduler.start()
 
     else:
         print(f"Connection failed with code {rc}")
@@ -46,9 +65,7 @@ mqtt_client.loop_start()
 
 
 def on_message(client, userdata, msg):
-    global people_inside
-    global system_on
-    global alarm_on
+    global people_inside, system_on, alarm_on, alarm_clock_times, alarm_clock_on
 
     try:
         payload = json.loads(msg.payload.decode())
@@ -68,6 +85,7 @@ def on_message(client, userdata, msg):
         save_button_data(payload, influxdb_client)
 
     elif msg.topic == "buzzer":
+        print(payload)
         save_buzzer_data(payload, influxdb_client)
 
     elif msg.topic == "dht":
@@ -185,6 +203,7 @@ def on_message(client, userdata, msg):
                 msg = json.dumps({"event": "alarm-on-" + payload['name']})
                 mqtt_client.publish("alarm-on", payload=msg)
                 print("ALARM ", payload['name'])
+                alarm_on = True
 
     elif msg.topic == "gyro":
         save_gyro_data(payload, influxdb_client)
@@ -198,11 +217,13 @@ def on_message(client, userdata, msg):
             if (alarm_on is not True) and (system_on is True):
                 msg = json.dumps({"event": "alarm-on-gyro"})
                 mqtt_client.publish("alarm-on", payload=msg)
+                alarm_on = True
 
         if rotation < -175 or rotation > 175:
             if (alarm_on is not True) and (system_on is True):
                 msg = json.dumps({"event": "alarm-on-gyro"})
                 mqtt_client.publish("alarm-on", payload=msg)
+                alarm_on = True
 
     elif msg.topic == "lcd":
         save_lcd_data(payload, influxdb_client)
@@ -210,6 +231,15 @@ def on_message(client, userdata, msg):
         save_rgb_data(payload, influxdb_client)
     elif msg.topic == "fdss":
         save_fdss_data(payload, influxdb_client)
+    elif msg.topic == "alarm-clock-pi":
+        if payload["action"] == "add":
+            alarm_clock_times.append(payload["time"])
+        elif payload["action"] == "remove":
+            alarm_clock_times.remove(payload["time"])
+        elif payload["action"] == "turn-off":
+            alarm_clock_on = False
+            msg = json.dumps({"event": "alarm-off"})
+            mqtt_client.publish("alarm-clock-server", payload=msg)
 
 
 def handle_influx_query(query):
