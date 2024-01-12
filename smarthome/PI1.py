@@ -103,7 +103,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     try:
         payload = json.loads(msg.payload.decode())
-        # print(payload)
     except json.decoder.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
         return
@@ -112,16 +111,16 @@ def on_message(client, userdata, msg):
         run_diode(dl_settings, threads_pi1, stop_event_pi1)
     elif msg.topic == 'alarm-on':
         alarm_event.set()
-        print(payload)
+        print("Alarm: ON")
     elif msg.topic == 'alarm-off':
         alarm_event.clear()
-        print("ALARM OFF")
+        print("Alarm: OFF")
     elif msg.topic == 'system-on':
         system_event.set()
-        print("SYSTEM ON")
+        print("System: ON")
     elif msg.topic == 'system-off':
         system_event.clear()
-        print("SYSTEM OFF")
+        print("System: OFF")
 
 
 if __name__ == "__main__":

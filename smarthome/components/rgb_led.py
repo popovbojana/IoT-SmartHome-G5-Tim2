@@ -32,6 +32,8 @@ publisher_thread.start()
 def rgb_led_callback(state, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
+    print("RGB: " + state)
+
     # t = time.localtime()
     # print()
     # print("*" * 5 + settings['name'] + "*" * 5)

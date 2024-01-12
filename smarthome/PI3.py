@@ -73,14 +73,6 @@ def menu_actuators(settings, threads, stop_event):
                         run_buzzer(bb_settings, threads, stop_event, duration)
                         time.sleep(int(duration))
                     elif option == "2":
-                        brgb_settings = settings['Bedroom RGB'][0]
-                        color = input("Enter (white, red, green, blue, yellow, purple or light_blue) to select light,\n off to turn off:")
-                        if color.upper() not in ["WHITE", "RED", "GREEN", "BLUE", "YELLOW", "PURPLE", "LIGHT_BLUE", "OFF"]:
-                            break
-                        else:
-                            run_rgb_led(brgb_settings, threads, stop_event, color)
-                            time.sleep(1)
-                    elif option == "3":
                         ir_settings = settings['Bedroom Infrared'][0]
                         ir_button = input("Enter (LEFT, RIGHT, UP, DOWN, 2, 3, 1, OK, 4, 5, 6, 7, 8, 9, *, 0, #) to select command: ")
                         if ir_button.upper() not in ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0", "#"]:
@@ -125,6 +117,21 @@ alarm_event = threading.Event()
 system_event = threading.Event()
 alarm_clock_event = threading.Event()
 
+# state_off_event = threading.Event()
+# state_white_event = threading.Event()
+# state_red_event = threading.Event()
+# state_green_event = threading.Event()
+# state_blue_event = threading.Event()
+# state_yellow_event = threading.Event()
+# state_purple_event = threading.Event()
+# state_lightblue_event = threading.Event()
+#
+#
+# def set_rgb_states(state_to_set, *other_states):
+#     state_to_set.set()
+#
+#     for state in other_states:
+#         state.clear()
 
 def on_connect(client, userdata, flags, rc):
     topics = ['rgb_commands', 'alarm-on', 'alarm-off', 'system-on', 'system-off', 'alarm-clock-on', 'alarm-clock-server']
@@ -153,6 +160,23 @@ def on_message(client, userdata, msg):
         command = payload['command']
         brgb_settings = settings_pi3['Bedroom RGB'][0]
         run_rgb_led(command, brgb_settings, threads_pi3, stop_event_pi3)
+
+        # if command == "OFF":
+        #     set_rgb_states(state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "WHITE":
+        #     set_rgb_states(state_white_event, state_off_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "RED":
+        #     set_rgb_states(state_red_event, state_off_event, state_white_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "GREEN":
+        #     set_rgb_states(state_green_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "BLUE":
+        #     set_rgb_states(state_blue_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "YELLOW":
+        #     set_rgb_states(state_yellow_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "PURPLE":
+        #     set_rgb_states(state_purple_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
+        # elif command == "LIGHT_BLUE":
+        #     set_rgb_states(state_lightblue_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
 
     elif msg.topic == 'alarm-on':
         alarm_event.set()

@@ -6,7 +6,7 @@ from settings.broker_settings import HOST, PORT
 
 ir_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 
@@ -31,12 +31,12 @@ publisher_thread.start()
 def ir_callback(button, code, settings, publish_event):
     global publish_data_counter, publish_data_limit
 
-    t = time.localtime()
-    print()
-    print("*" * 5 + settings['name'] + "*" * 5)
-    print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
-    print(f"Code: {code}")
-    print(f"Button: {button.upper()}")
+    # t = time.localtime()
+    # print()
+    # print("*" * 5 + settings['name'] + "*" * 5)
+    # print(f"Timestamp: {time.strftime('%H:%M:%S', t)}")
+    # print(f"Code: {code}")
+    # print(f"Button: {button.upper()}")
 
     message = {
         "pi": settings['pi'],
