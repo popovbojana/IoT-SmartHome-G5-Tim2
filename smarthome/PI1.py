@@ -42,6 +42,9 @@ def run_sensors(settings, threads, stop_event):
     run_button(ds1_settings, threads, stop_event)
     run_buzzer(db_settings, threads, stop_event, alarm_event, system_event, alarm_clock_event)
 
+    dms_settings = settings['Door Membrane Switch'][0]
+    run_dms('key', dms_settings, threads, stop_event, system_event)
+
 
 def run_actuators(settings, threads, stop_event):
     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))

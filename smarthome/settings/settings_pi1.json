@@ -58,7 +58,7 @@
       "name": "DMS",
       "simulated": true,
       "row_pins": [25, 8, 7, 1],
-      "column_pins": [12, 16, 20, 21],
+      "col_pins": [12, 16, 20, 21],
       "key" : [0,0,0,0]
     }
   ],
