@@ -1,18 +1,39 @@
 <div>  
     
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            DS1
-            <mat-icon>radio_button_checked</mat-icon>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        
-          <p>proba</p>
-    
-      </mat-expansion-panel>
-    </mat-accordion>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          DS1
+          <mat-icon>radio_button_checked</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+  
+      <div class="card-container">
+        <mat-card class="current-info">
+          <mat-card-header>
+            <mat-card-title>Current info</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <p>Runs on:</p>
+            <p>Simulated:</p>
+            <p>Value:</p>
+          </mat-card-content>
+        </mat-card>
+  
+        <mat-card class="history">
+          <mat-card-header>
+            <mat-card-title>History</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <iframe src="http://localhost:3000/d-solo/f49a4897-ab0b-4f5a-aee3-b60db1f61fe5/dht?orgId=1&from=1706028553795&to=1706050153795&panelId=1" width="450" height="200" frameborder="0"></iframe>
+          </mat-card-content>
+        </mat-card>
+      </div>
+  
+    </mat-expansion-panel>
+  </mat-accordion>
+  
 
     <mat-accordion>
         <mat-expansion-panel>
