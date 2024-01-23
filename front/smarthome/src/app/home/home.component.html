@@ -1,0 +1,108 @@
+<div class="card-container">
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title>ALARM</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-icon class="large-icon" [ngClass]="{ 'active': isAlarmActive }" *ngIf="isAlarmActive">notifications_active</mat-icon>
+        <mat-icon class="large-icon" [ngClass]="{ 'not-active': !isAlarmActive }" *ngIf="!isAlarmActive">notifications_off</mat-icon>
+      </mat-card-content>
+    </mat-card>
+  
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title>ALARM CLOCK</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-icon class="large-icon" [ngClass]="{ 'active': isAlarmClockActive }" *ngIf="isAlarmClockActive">alarm_on</mat-icon>
+        <mat-icon class="large-icon" [ngClass]="{ 'not-active': !isAlarmClockActive }" *ngIf="!isAlarmClockActive">alarm_off</mat-icon>
+      </mat-card-content>
+    </mat-card>
+  
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title>PEOPLE INSIDE</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="large-icon">
+        {{peopleInside}}
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+<div>  
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          DMS
+          <mat-icon>keyboard</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+        <div class="keypad-container">
+            <mat-card class="keypad">
+            <div class="key-row" *ngFor="let row of keypadRows">
+                <div class="key" *ngFor="let key of row" (click)="onKeyPress(key)">
+                {{ key }}
+                </div>
+            </div>
+            </mat-card>
+            <div class="controls">
+            <div class="passcode-input">
+                <div class="digit" *ngFor="let digit of passcode">{{ digit }}</div>
+            </div>
+            <div class="buttons">
+                <button mat-raised-button color="primary" (click)="onApplyClickDMS()">Apply</button>
+                <button mat-raised-button color="warn" (click)="onCancelClickDMS()">Cancel</button>
+            </div>
+            </div>
+        </div>
+  
+  
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Alarm clock
+          <mat-icon>alarm_add</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      
+    <div class="clock-container">
+        <div class="clock-input">
+            <input type="text" [(ngModel)]="selectedHour[0]" maxlength="1" placeholder="H">
+            <input type="text" [(ngModel)]="selectedHour[1]" maxlength="1" placeholder="H">
+            <span>:</span>
+            <input type="text" [(ngModel)]="selectedMinute[0]" maxlength="1" placeholder="M">
+            <input type="text" [(ngModel)]="selectedMinute[1]" maxlength="1" placeholder="M">
+        </div>
+
+        <div class="buttons">
+            <button mat-raised-button color="primary" (click)="onApplyClickAlarmClock()">Set</button>
+            <button mat-raised-button color="warn" (click)="onCancelClickAlarmClock()">Cancel</button>
+        </div>
+    </div>
+  
+  
+  
+  
+
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          BIR
+          <mat-icon>settings_remote</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <p>This is the primary content of the panel.</p>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+  
