@@ -11,12 +11,18 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { Pi1Component } from './pi1/pi1.component';
+import { Pi2Component } from './pi2/pi2.component';
+import { Pi3Component } from './pi3/pi3.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    HomeComponent
+    HomeComponent,
+    Pi1Component,
+    Pi2Component,
+    Pi3Component
   ],
   imports: [
     BrowserModule,

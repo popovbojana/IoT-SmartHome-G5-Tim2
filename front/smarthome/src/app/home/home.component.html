@@ -1,4 +1,15 @@
 <div class="card-container">
+
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title>SYSTEM</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-icon class="large-icon" [ngClass]="{ 'active': isSystemActive }" *ngIf="isSystemActive">lock</mat-icon>
+        <mat-icon class="large-icon" [ngClass]="{ 'not-active': !isSystemActive }" *ngIf="!isSystemActive">lock_open</mat-icon>
+      </mat-card-content>
+    </mat-card>
+
     <mat-card class="example-card">
       <mat-card-header>
         <mat-card-title>ALARM</mat-card-title>
@@ -27,6 +38,7 @@
         {{peopleInside}}
       </mat-card-content>
     </mat-card>
+
   </div>
 
 <div>  
@@ -86,10 +98,6 @@
         </div>
     </div>
   
-  
-  
-  
-
     </mat-expansion-panel>
   </mat-accordion>
 
@@ -101,7 +109,26 @@
           <mat-icon>settings_remote</mat-icon>
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p>This is the primary content of the panel.</p>
+      
+      <div class="keypad-container">
+        <mat-card class="keypad">
+        <div class="key-row" *ngFor="let row of receiverRows">
+            <div class="key" *ngFor="let key of row" (click)="onKeyPressReceiver(key)">
+            {{ key }}
+            </div>
+        </div>
+        </mat-card>
+        <!-- <div class="controls">
+        <div class="passcode-input">
+            <div class="digit" *ngFor="let digit of passcode">{{ digit }}</div>
+        </div>
+        <div class="buttons">
+            <button mat-raised-button color="primary" (click)="onApplyClickDMS()">Apply</button>
+            <button mat-raised-button color="warn" (click)="onCancelClickDMS()">Cancel</button>
+        </div>
+        </div> -->
+    </div>
+
     </mat-expansion-panel>
   </mat-accordion>
 </div>

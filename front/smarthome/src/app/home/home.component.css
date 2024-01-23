@@ -5,7 +5,8 @@
   }
   
   .example-card {
-    width: 30%;
+    width: 25%;
+    margin-right: 10px;
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -146,4 +147,4 @@
     margin-top: 10px; 
   }
   
-  
+

@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  isSystemActive: boolean = true;
   isAlarmActive: boolean = true;
   isAlarmClockActive: boolean = true;
   peopleInside: number = 0;
@@ -17,6 +18,16 @@ export class HomeComponent {
     ['*', '0', '#', 'D']
   ];
 
+  receiverRows: string[][] = [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9'],
+    ['*', '0', '#'],
+    ['↑'],
+    ['←', 'OK', '→'],
+    ['↓'],
+  ];
+
   passcode: string[] = ['', '', '', ''];
 
   onKeyPress(digit: string): void {
@@ -25,6 +36,11 @@ export class HomeComponent {
       this.passcode[index] = digit;
     }
     console.log('Passcode:', this.passcode.join(''));
+  }
+
+  onKeyPressReceiver(digit: string): void {
+    alert('Pressed: ' + digit);
+    console.log('Pressed: ' + digit);
   }
 
   onApplyClickDMS(): void {
