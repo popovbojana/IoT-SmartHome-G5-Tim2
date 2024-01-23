@@ -1,7 +1,9 @@
 import time
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask
+from flask import Flask, jsonify
+from flask_cors import CORS  # Import CORS from Flask-CORS
+from flask_socketio import SocketIO
 import json
 import paho.mqtt.client as mqtt
 from influxdb_client import InfluxDBClient
@@ -25,6 +27,39 @@ alarm_clock_on = False
 # InfluxDB Config
 influxdb_client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
 scheduler = BackgroundScheduler()
+
+# Web sockets config
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+def send_message_ws(topic, message):
+    try:
+        socketio.emit(topic, message)
+    except Exception as e:
+        print(e)
+
+
+@app.route('/proba/<string:pin>', methods=['PUT'])
+def safety_system(pin):
+    try:
+        print(pin, "set system PIN ============")
+        try:
+            send_message_ws('proba', "a")
+            print("aa")
+        except Exception as e:
+            print(e)
+        # pin treba proslediti preko mqtt simulatoru
+        return jsonify({"response": "Safety System set " + pin})
+    except Exception as e:
+        return jsonify({"response": "error - " + str(e)})
 
 
 def check_and_trigger_alarms():
