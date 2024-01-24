@@ -46,7 +46,7 @@ def fdss_callback(alarm_time, binary, code, settings, publish_event):
         "simulated": settings['simulated'],
         "timestamp": time.time(),
         "alarm_time": alarm_time,
-        "binary": binary
+        "code": code
     }
 
     with counter_lock:
