@@ -1,0 +1,17 @@
+<!-- proba.component.html -->
+
+<div>
+    <h2>WebSocket Chat</h2>
+  
+    <!-- Prikaz primljenih poruka -->
+    <div *ngFor="let msg of messages">
+      {{ msg }}
+    </div>
+  
+    <!-- Unos nove poruke -->
+    <div>
+      <input [(ngModel)]="message" placeholder="Enter message" />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+  

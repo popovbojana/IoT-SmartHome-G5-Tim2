@@ -14,6 +14,10 @@ import { FormsModule } from '@angular/forms';
 import { Pi1Component } from './pi1/pi1.component';
 import { Pi2Component } from './pi2/pi2.component';
 import { Pi3Component } from './pi3/pi3.component';
+import { ProbaComponent } from './proba/proba.component';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: '127.0.0.1:5000', options: {} };
 
 @NgModule({
   declarations: [
@@ -22,7 +26,8 @@ import { Pi3Component } from './pi3/pi3.component';
     HomeComponent,
     Pi1Component,
     Pi2Component,
-    Pi3Component
+    Pi3Component,
+    ProbaComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +37,8 @@ import { Pi3Component } from './pi3/pi3.component';
     MatExpansionModule,
     BrowserAnimationsModule,
     MatButtonModule,
-    FormsModule
+    FormsModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [],
   bootstrap: [AppComponent]

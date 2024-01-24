@@ -1,5 +1,8 @@
+<div style="text-align: center;">
+  <h1 style="font-size: xx-large; font-weight: bold;">PI2</h1>
+</div>
+
 <div>  
-    
     <mat-accordion>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -9,7 +12,28 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         
-          <p>proba</p>
+        <div class="card-container">
+          <mat-card class="current-info">
+            <mat-card-header>
+              <mat-card-title>Current info</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p><i>Name: </i> <b>{{ds2.name}}</b></p>
+              <p><i>Runs on: </i> <b>{{ds2.pi}}</b></p>
+              <p><i>Simulated: </i> <b>{{ds2.simulated}}</b></p>
+              <p><i>Door unlocked: </i> <b>{{ds2.door_unlocked}}</b></p>
+            </mat-card-content>
+          </mat-card>
+    
+          <mat-card class="history">
+            <mat-card-header>
+              <mat-card-title>History</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=5" width="600" height="300" frameborder="0"></iframe>            
+            </mat-card-content>
+          </mat-card>
+        </div>
     
       </mat-expansion-panel>
     </mat-accordion>
@@ -23,7 +47,28 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{dus2.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{dus2.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{dus2.simulated}}</b></p>
+                <p><i>Distance: </i> <b>{{dus2.distance}}</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=6" width="600" height="300" frameborder="0"></iframe>
+              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -37,7 +82,27 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{dpir2.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{dpir2.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{dpir2.simulated}}</b></p>
+                <p><i>Motion detected: </i> <b>{{dpir2.motion_detected}}</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=4" width="600" height="300" frameborder="0"></iframe>              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -52,7 +117,28 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{gdht.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{gdht.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{gdht.simulated}}</b></p>
+                <p><i>Humidity: </i> <b>{{gdht.humidity}}</b></p>
+                <p><i>Temperature: </i> <b>{{gdht.temperature}} °C</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=2" width="600" height="300" frameborder="0"></iframe>              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -66,7 +152,28 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{glcd.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{glcd.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{glcd.simulated}}</b></p>
+                <p><i>Display: </i> <b>{{glcd.display}}</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=7" width="600" height="300" frameborder="0"></iframe>
+              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -80,7 +187,29 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{gsg.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{gsg.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{gsg.simulated}}</b></p>
+                <p><i>Rotation: </i> <b>{{gsg.rotation}}</b></p>
+                <p><i>Acceleration: </i> <b>{{gsg.acceleration}}</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=8" width="600" height="300" frameborder="0"></iframe>
+              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -94,7 +223,28 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{rpir3.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{rpir3.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{rpir3.simulated}}</b></p>
+                <p><i>Motion detected: </i> <b>{{rpir3.motion_detected}}</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=3" width="600" height="300" frameborder="0"></iframe>
+              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
@@ -109,7 +259,28 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           
-            <p>proba</p>
+          <div class="card-container">
+            <mat-card class="current-info">
+              <mat-card-header>
+                <mat-card-title>Current info</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p><i>Name: </i> <b>{{rdht3.name}}</b></p>
+                <p><i>Runs on: </i> <b>{{rdht3.pi}}</b></p>
+                <p><i>Simulated: </i> <b>{{rdht3.simulated}}</b></p>
+                <p><i>Humidity: </i> <b>{{rdht3.humidity}}</b></p>
+                <p><i>Temperature: </i> <b>{{rdht3.temperature}} °C</b></p>
+              </mat-card-content>
+            </mat-card>
+      
+            <mat-card class="history">
+              <mat-card-header>
+                <mat-card-title>History</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <iframe src="http://localhost:3000/d-solo/da6ee551-1bb6-4201-abb0-7376281185b4/pi2?orgId=1&from=now-3h&to=now&panelId=1" width="600" height="300" frameborder="0"></iframe>              </mat-card-content>
+            </mat-card>
+          </div>
       
         </mat-expansion-panel>
     </mat-accordion>
