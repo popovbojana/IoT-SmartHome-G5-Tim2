@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Button } from '../devices/button';
 import { DHT } from '../devices/dht';
 import { DUS } from '../devices/dus';
 import { Gyro } from '../devices/gyro';
 import { LCD } from '../devices/lcd';
 import { PIR } from '../devices/pir';
+import { Socket } from 'ngx-socket-io';
 
 @Component({
   selector: 'app-pi2',
   templateUrl: './pi2.component.html',
   styleUrls: ['./pi2.component.css']
 })
-export class Pi2Component {
+export class Pi2Component  implements OnInit{
+
+  constructor(private socket: Socket) { }
 
   ds2: Button = {
     pi: '',
@@ -79,5 +82,40 @@ export class Pi2Component {
     timestamp: '',
     humidity: 0,
     temperature: 0
+  }
+
+  ngOnInit() {
+    this.socket.on('DS2', (response: Button) => {
+      this.ds2 = response;
+    });
+
+    this.socket.on('DUS2', (response: DUS) => {
+      this.dus2 = response;
+    });
+
+    this.socket.on('DPIR2', (response: PIR) => {
+      this.dpir2 = response;
+    }); 
+
+    this.socket.on('GDHT', (response: DHT) => {
+      this.gdht = response;
+    });
+
+    this.socket.on('GLCD', (response: LCD) => {
+      this.glcd = response;
+    });
+
+    this.socket.on('GSG', (response: Gyro) => {
+      this.gsg = response;
+    });
+
+    this.socket.on('RPIR3', (response: PIR) => {
+      this.rpir3 = response;
+    }); 
+
+    this.socket.on('RDH3', (response: DHT) => {
+      this.rdht3 = response;
+    });
+
   }
 }
