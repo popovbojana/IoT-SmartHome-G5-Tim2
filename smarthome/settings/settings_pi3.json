@@ -4,7 +4,7 @@
       "pi": "PI3",
       "name": "RPIR4",
       "simulated": true,
-      "pin": 0
+      "pin": 17
     }
   ],
   "Room DHT": [
@@ -12,7 +12,7 @@
       "pi": "PI3",
       "name": "RDHT4",
       "simulated": true,
-      "pin": 0
+      "pin": 27
     }
   ],
   "Bedroom Buzzer": [
@@ -20,7 +20,7 @@
       "pi": "PI3",
       "name": "BB",
       "simulated": true,
-      "pin": 0
+      "pin": 22
     }
   ],
   "Bedroom 4 Digit 7 Segment Display": [
@@ -28,8 +28,8 @@
       "pi": "PI3",
       "name": "B4SD",
       "simulated": true,
-      "segment_pins": [11, 4, 23, 8, 7, 10, 18, 25],
-      "digit_pins": [22, 27, 17, 24]
+      "segment_pins": [25, 8, 7, 1, 12, 16, 20, 21],
+      "digit_pins": [15, 18, 23, 24]
     }
   ],
   "Bedroom Infrared": [
@@ -37,7 +37,7 @@
       "pi": "PI3",
       "name": "BIR",
       "simulated": true,
-      "pin": 17
+      "pin": 14
     }
   ],
   "Bedroom RGB": [
@@ -45,9 +45,9 @@
       "pi": "PI3",
       "name": "BRGB",
       "simulated": true,
-      "red_pin": 12,
-      "green_pin": 13,
-      "blue_pin": 19
+      "red_pin": 2,
+      "green_pin": 3,
+      "blue_pin": 4
     }
   ]
 }

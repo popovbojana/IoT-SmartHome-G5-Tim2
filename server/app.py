@@ -95,6 +95,9 @@ def handle_dms(payload):
                 mqtt_client.publish("system-on", payload=msg)
                 system_on = True
                 send_message_ws("system", True)
+            return True
+        else:
+            return False
 
 
 def handle_ir(payload):
@@ -263,11 +266,15 @@ def dms_endpoint():
             print("Received JSON data: ", payload)
             try:
                 save_dms_data(payload, influxdb_client)
-                handle_dms(payload)
-            except Exception as e:
-                print(e)
+                result = handle_dms(payload)
 
-            return jsonify({"response": "DMS processed successfully"})
+                if not result:
+                    raise Exception("wrong password")
+
+            except Exception as e:
+                return jsonify({"response": "error - " + str(e)})
+
+            return jsonify({"response": "Correct passcode. Dms processed successfully"})
         else:
             return jsonify({"response": "error - No JSON data received"})
     except Exception as e:

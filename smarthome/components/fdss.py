@@ -57,11 +57,11 @@ def fdss_callback(alarm_time, binary, code, settings, publish_event):
         publish_event.set()
 
 
-def run_fdss(settings, threads, stop_event):
+def run_fdss(settings, threads, stop_event, alarm_clock_event):
     if settings['simulated']:
         print(f"Starting {settings['name']} simulator")
         lcd_thread = threading.Thread(target=run_fdss_simulator, args=(2, fdss_callback, stop_event, settings,
-                                                                       publish_event))
+                                                                       publish_event, alarm_clock_event))
         lcd_thread.start()
         threads.append(lcd_thread)
         print(f"{settings['name']} simulator started")
