@@ -35,10 +35,10 @@ def run_sensors(settings, threads, stop_event):
     run_buzzer(bb_settings, threads, stop_event, alarm_event, system_event, alarm_clock_event)
 
 
-def run_actuators(settings, threads, stop_event):
-    thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
-    thread.start()
-    threads.append(thread)
+# def run_actuators(settings, threads, stop_event):
+#     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
+#     thread.start()
+#     threads.append(thread)
 
 
 def validate_time_format(time_str):
@@ -50,61 +50,61 @@ def validate_time_format(time_str):
         return False
 
 
-def menu_actuators(settings, threads, stop_event):
-    while not stop_event.is_set():
-        print()
-        option = input("Enter X/x to start actuator menu: ")
-        if option.capitalize() == "X":
-            while True:
-                with print_lock:
-                    print()
-                    print("**** ACTUATOR MENU ****")
-                    print("1) Enter 1 to buzz\n"
-                          "2) Enter 2 for RGB\n"
-                          "3) Enter 3 for IR Receiver\n"
-                          "4) Enter 4 for setting an alarm\n"
-                          "5) Enter 5 for setting off an alarm\n"
-                          "6) Enter 6 for removing an alarm\n"
-                          "7) Enter 7 to exit\n")
-                    option = input("Enter: ")
-                    if option == "1":
-                        bb_settings = settings['Bedroom Buzzer'][0]
-                        duration = input("Enter duration: ")
-                        run_buzzer(bb_settings, threads, stop_event, duration)
-                        time.sleep(int(duration))
-                    elif option == "2":
-                        ir_settings = settings['Bedroom Infrared'][0]
-                        ir_button = input("Enter (LEFT, RIGHT, UP, DOWN, 2, 3, 1, OK, 4, 5, 6, 7, 8, 9, *, 0, #) to select command: ")
-                        if ir_button.upper() not in ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0", "#"]:
-                            break
-                        else:
-                            run_ir(ir_settings, threads, stop_event, ir_button)
-                            time.sleep(1)
-                    elif option == "4":
-                        alarm_time = input("Enter what time you want your alarm to turn on with format HH:MM: ")
-                        if validate_time_format(alarm_time):
-                            msg = json.dumps({"time": alarm_time, "action": "add"})
-                            mqtt_client.publish("alarm-clock-pi", payload=msg)
-                        else:
-                            print("Invalid time format. Please enter the time in HH:MM format.")
-                    elif option == "5":
-                        msg = json.dumps({"time": "empty", "action": "turn-off"})
-                        mqtt_client.publish("alarm-clock-pi", payload=msg)
-                    elif option == "6":
-                        alarm_time = input("Enter what alarm you want to remove with format HH:MM: ")
-                        if validate_time_format(alarm_time):
-                            msg = json.dumps({"time": alarm_time, "action": "remove"})
-                            mqtt_client.publish("alarm-clock-pi", payload=msg)
-                        else:
-                            print("Invalid time format. Please enter the time in HH:MM format.")
-                    elif option == "7":
-                        print("Exiting the menu. Printing is resumed.")
-                        break
-
-                    else:
-                        print("Entered wrong number, try again :)")
-        else:
-            pass
+# def menu_actuators(settings, threads, stop_event):
+#     while not stop_event.is_set():
+#         print()
+#         option = input("Enter X/x to start actuator menu: ")
+#         if option.capitalize() == "X":
+#             while True:
+#                 with print_lock:
+#                     print()
+#                     print("**** ACTUATOR MENU ****")
+#                     print("1) Enter 1 to buzz\n"
+#                           "2) Enter 2 for RGB\n"
+#                           "3) Enter 3 for IR Receiver\n"
+#                           "4) Enter 4 for setting an alarm\n"
+#                           "5) Enter 5 for setting off an alarm\n"
+#                           "6) Enter 6 for removing an alarm\n"
+#                           "7) Enter 7 to exit\n")
+#                     option = input("Enter: ")
+#                     if option == "1":
+#                         bb_settings = settings['Bedroom Buzzer'][0]
+#                         duration = input("Enter duration: ")
+#                         run_buzzer(bb_settings, threads, stop_event, duration)
+#                         time.sleep(int(duration))
+#                     elif option == "2":
+#                         ir_settings = settings['Bedroom Infrared'][0]
+#                         ir_button = input("Enter (LEFT, RIGHT, UP, DOWN, 2, 3, 1, OK, 4, 5, 6, 7, 8, 9, *, 0, #) to select command: ")
+#                         if ir_button.upper() not in ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0", "#"]:
+#                             break
+#                         else:
+#                             run_ir(ir_settings, threads, stop_event, ir_button)
+#                             time.sleep(1)
+#                     elif option == "4":
+#                         alarm_time = input("Enter what time you want your alarm to turn on with format HH:MM: ")
+#                         if validate_time_format(alarm_time):
+#                             msg = json.dumps({"time": alarm_time, "action": "add"})
+#                             mqtt_client.publish("alarm-clock-pi", payload=msg)
+#                         else:
+#                             print("Invalid time format. Please enter the time in HH:MM format.")
+#                     elif option == "5":
+#                         msg = json.dumps({"time": "empty", "action": "turn-off"})
+#                         mqtt_client.publish("alarm-clock-pi", payload=msg)
+#                     elif option == "6":
+#                         alarm_time = input("Enter what alarm you want to remove with format HH:MM: ")
+#                         if validate_time_format(alarm_time):
+#                             msg = json.dumps({"time": alarm_time, "action": "remove"})
+#                             mqtt_client.publish("alarm-clock-pi", payload=msg)
+#                         else:
+#                             print("Invalid time format. Please enter the time in HH:MM format.")
+#                     elif option == "7":
+#                         print("Exiting the menu. Printing is resumed.")
+#                         break
+#
+#                     else:
+#                         print("Entered wrong number, try again :)")
+#         else:
+#             pass
 
 
 def run_displays(settings, threads, stop_event):
@@ -215,7 +215,7 @@ if __name__ == "__main__":
 
     try:
         run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
-        run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
+        # run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
         run_displays(settings_pi3, threads_pi3, stop_event_pi3)
 
         while True:

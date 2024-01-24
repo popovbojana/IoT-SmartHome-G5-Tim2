@@ -1,7 +1,7 @@
 import time
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS  # Import CORS from Flask-CORS
 from flask_socketio import SocketIO
 import json
@@ -40,24 +40,294 @@ def handle_connect():
 def handle_disconnect():
     print('Client disconnected')
 
-def send_message_ws(topic, message):
+
+def send_message_ws(topic, payload):
     try:
-        socketio.emit(topic, message)
+        socketio.emit(topic, payload)
     except Exception as e:
         print(e)
 
 
-@app.route('/proba/<string:pin>', methods=['PUT'])
-def safety_system(pin):
+def handle_button(payload):
+    global alarm_on, system_on
+    if (payload["code"] == "BUTTON_5_SEC") and (alarm_on is not True) and (system_on is True):
+        msg = json.dumps({"event": "alarm-on-button", "time": payload["timestamp"]})
+        mqtt_client.publish("alarm-on", payload=msg)
+        save_alarm_data(True, time.time(), influxdb_client)
+        alarm_on = True
+        send_message_ws("alarm", True)
+
+
+def handle_dht(payload):
+    message = {
+        "display": ("Humidity: " + str(payload['humidity']) + "\n" +
+                    "Temperature: " + str(payload['temperature']))
+    }
+
+    msg = json.dumps(message)
+    mqtt_client.publish("lcd-display", payload=msg)
+
+
+def handle_dms(payload):
+    global alarm_on, system_on
+    key_list = [str(p) for p in pin_code]
+    key = payload['key']
+    if ',' in key:
+        list = key.split(',')
+        check_key_list = [l.strip() for l in list]
+        if key_list == check_key_list:
+            if system_on:
+                msg = json.dumps({"event": "system-off"})
+                mqtt_client.publish("system-off", payload=msg)
+                system_on = False
+                send_message_ws("system", False)
+
+                if alarm_on:
+                    msg = json.dumps({"event": "alarm-off"})
+                    mqtt_client.publish("alarm-off", payload=msg)
+                    save_alarm_data(False, time.time(), influxdb_client)
+                    alarm_on = False
+                    send_message_ws("alarm", False)
+
+            else:
+                time.sleep(10)
+                msg = json.dumps({"event": "system-on"})
+                mqtt_client.publish("system-on", payload=msg)
+                system_on = True
+                send_message_ws("system", True)
+
+
+def handle_ir(payload):
+    if payload['button'] == "0":
+        msg = json.dumps({"command": "OFF"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "1":
+        msg = json.dumps({"command": "WHITE"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "2":
+        msg = json.dumps({"command": "RED"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "3":
+        msg = json.dumps({"command": "GREEN"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "4":
+        msg = json.dumps({"command": "BLUE"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "5":
+        msg = json.dumps({"command": "YELLOW"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "6":
+        msg = json.dumps({"command": "PURPLE"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+    elif payload['button'] == "7":
+        msg = json.dumps({"command": "LIGHT_BLUE"})
+        mqtt_client.publish("rgb_commands", payload=msg)
+
+
+def handle_pir(payload):
+    global system_on, alarm_on, people_inside
+    if payload["name"] == "DPIR1":
+        msg = json.dumps({"event": "turn-on"})
+        mqtt_client.publish("dpir1-light-on", payload=msg)
+
+        event_timestamp = payload["timestamp"]
+        if not isinstance(event_timestamp, datetime):
+            event_timestamp = datetime.fromtimestamp(event_timestamp)
+        start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
+        end_time = int(event_timestamp.timestamp())
+
+        query = f"""
+            from(bucket: "iot")
+              |> range(start: {start_time}, stop: {end_time})
+              |> filter(fn: (r) => r["_measurement"] == "uds_data")
+              |> filter(fn: (r) => r["_field"] == "distance")
+              |> filter(fn: (r) => r["name"] == "DUS1")
+            """
+        last_dus1_data = handle_influx_query(query)
+        if last_dus1_data['status'] == "success":
+            sorted_data = sorted(last_dus1_data['data'], key=lambda x: x['_time'])
+            if len(sorted_data) >= 1:
+                first_distance = sorted_data[0]['_value']
+                last_distance = sorted_data[-1]['_value']
+
+                with people_inside_lock:
+                    if last_distance > first_distance:
+                        people_inside += 1
+                    elif last_distance < first_distance:
+                        people_inside -= 1
+                        if people_inside < 0:
+                            people_inside = 0
+                    else:
+                        pass
+
+            print("People inside: ", people_inside)
+            save_people_data(people_inside, time.time(), influxdb_client)
+
+    if payload["name"] == "DPIR2":
+        event_timestamp = payload["timestamp"]
+        if not isinstance(event_timestamp, datetime):
+            event_timestamp = datetime.fromtimestamp(event_timestamp)
+        start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
+        end_time = int(event_timestamp.timestamp())
+
+        query = f"""
+            from(bucket: "iot")
+              |> range(start: {start_time}, stop: {end_time})
+              |> filter(fn: (r) => r["_measurement"] == "uds_data")
+              |> filter(fn: (r) => r["_field"] == "distance")
+              |> filter(fn: (r) => r["name"] == "DUS2")
+            """
+        last_dus2_data = handle_influx_query(query)
+        if last_dus2_data['status'] == "success":
+            sorted_data = sorted(last_dus2_data['data'], key=lambda x: x['_time'])
+            if len(sorted_data) >= 1:
+                first_distance = sorted_data[0]['_value']
+                last_distance = sorted_data[-1]['_value']
+
+                with people_inside_lock:
+                    if last_distance > first_distance:
+                        people_inside += 1
+                    elif last_distance < first_distance:
+                        people_inside -= 1
+                        if people_inside < 0:
+                            people_inside = 0
+                    else:
+                        pass
+
+            print("People inside: ", people_inside)
+            save_people_data(people_inside, time.time(), influxdb_client)
+
+    if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
+        'name'] == 'RPIR4':
+        if people_inside == 0 and (alarm_on is not True) and (system_on is True):
+            msg = json.dumps({"event": "alarm-on-" + payload['name']})
+            mqtt_client.publish("alarm-on", payload=msg)
+            save_alarm_data(True, time.time(), influxdb_client)
+            print("ALARM ", payload['name'])
+            alarm_on = True
+            send_message_ws("alarm", True)
+
+
+def handle_gyro(payload):
+    global alarm_on, system_on
+    acceleration = float(payload['acceleration'])
+    rotation = float(payload['rotation'])
+    print("acceleration: ", acceleration)
+    print("rotation: ", rotation)
+
+    if acceleration < -9.5 or acceleration > 9.5:
+        if (alarm_on is not True) and (system_on is True):
+            msg = json.dumps({"event": "alarm-on-gyro"})
+            mqtt_client.publish("alarm-on", payload=msg)
+            alarm_on = True
+            save_alarm_data(True, time.time(), influxdb_client)
+            send_message_ws("alarm", True)
+
+    if rotation < -175 or rotation > 175:
+        if (alarm_on is not True) and (system_on is True):
+            msg = json.dumps({"event": "alarm-on-gyro"})
+            mqtt_client.publish("alarm-on", payload=msg)
+            alarm_on = True
+            save_alarm_data(True, time.time(), influxdb_client)
+            send_message_ws("alarm", True)
+
+
+def handle_alarm_clock_pi(payload):
+    global alarm_clock_on
+    if payload["action"] == "add":
+        alarm_clock_times.append(payload["time"])
+    elif payload["action"] == "remove":
+        alarm_clock_times.remove(payload["time"])
+    elif payload["action"] == "turn-off":
+        alarm_clock_on = False
+        msg = json.dumps({"event": "alarm-off"})
+        mqtt_client.publish("alarm-clock-server", payload=msg)
+        send_message_ws("alarm_clock", False)
+
+
+@app.route('/button', methods=['POST'])
+def button_endpoint():
     try:
-        print(pin, "set system PIN ============")
-        try:
-            send_message_ws('proba', "a")
-            print("aa")
-        except Exception as e:
-            print(e)
-        # pin treba proslediti preko mqtt simulatoru
-        return jsonify({"response": "Safety System set " + pin})
+        payload = request.get_json()
+
+        if payload:
+            print("Received JSON data: ", payload)
+            try:
+                save_button_data(payload, influxdb_client)
+                handle_button(payload)
+
+            except Exception as e:
+                print(e)
+
+            return jsonify({"response": "Button processed successfully"})
+        else:
+            return jsonify({"response": "error - No JSON data received"})
+    except Exception as e:
+        return jsonify({"response": "error - " + str(e)})
+
+
+@app.route('/dms', methods=['POST'])
+def dms_endpoint():
+    try:
+        payload = request.get_json()
+
+        if payload:
+            print("Received JSON data: ", payload)
+            try:
+                save_dms_data(payload, influxdb_client)
+                handle_ir(payload)
+            except Exception as e:
+                print(e)
+
+            return jsonify({"response": "Ir processed successfully"})
+        else:
+            return jsonify({"response": "error - No JSON data received"})
+    except Exception as e:
+        return jsonify({"response": "error - " + str(e)})
+
+
+@app.route('/ir', methods=['POST'])
+def ir_endpoint():
+    try:
+        payload = request.get_json()
+
+        if payload:
+            print("Received JSON data: ", payload)
+            try:
+                save_ir_data(payload, influxdb_client)
+                handle_ir(payload)
+            except Exception as e:
+                print(e)
+
+            return jsonify({"response": "Ir processed successfully"})
+        else:
+            return jsonify({"response": "error - No JSON data received"})
+    except Exception as e:
+        return jsonify({"response": "error - " + str(e)})
+
+
+@app.route('/alarm-clock-pi', methods=['POST'])
+def alarm_clock_pi_endpoint():
+    try:
+        payload = request.get_json()
+
+        if payload:
+            print("Received JSON data: ", payload)
+            try:
+                handle_alarm_clock_pi(payload)
+            except Exception as e:
+                print(e)
+
+            return jsonify({"response": "Alarm clock pi processed successfully"})
+        else:
+            return jsonify({"response": "error - No JSON data received"})
     except Exception as e:
         return jsonify({"response": "error - " + str(e)})
 
@@ -71,7 +341,7 @@ def check_and_trigger_alarms():
         msg = json.dumps({"event": "alarm-on"})
         mqtt_client.publish("alarm-clock-server", payload=msg)
         alarm_clock_on = True
-
+        send_message_ws("alarm_clock", True)
 
 def on_connect(client, userdata, flags, rc):
     topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss", "ir",
@@ -92,7 +362,6 @@ def on_connect(client, userdata, flags, rc):
 
 
 mqtt_client = mqtt.Client()
-# mqtt_client.username_pw_set(username="client", password="password")
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = lambda client, userdata, msg: on_message(client, userdata, msg)
 mqtt_client.connect(HOST, PORT, 60)
@@ -111,214 +380,251 @@ def on_message(client, userdata, msg):
         return
 
     if msg.topic == "uds":
+        send_message_ws(payload["name"], payload)
         save_uds_data(payload, influxdb_client)
 
-    elif msg.topic == "button":
-        # print(payload)
-        if (payload["code"] == "BUTTON_5_SEC") and (alarm_on is not True) and (system_on is True):
-            msg = json.dumps({"event": "alarm-on-button", "time": payload["timestamp"]})
-            mqtt_client.publish("alarm-on", payload=msg)
-            save_alarm_data(True, time.time(), influxdb_client)
-            alarm_on = True
-        save_button_data(payload, influxdb_client)
+    # elif msg.topic == "button":
+    #     send_message_ws("button", payload, True)
+    #     # print(payload)
+    #     if (payload["code"] == "BUTTON_5_SEC") and (alarm_on is not True) and (system_on is True):
+    #         msg = json.dumps({"event": "alarm-on-button", "time": payload["timestamp"]})
+    #         mqtt_client.publish("alarm-on", payload=msg)
+    #         save_alarm_data(True, time.time(), influxdb_client)
+    #         alarm_on = True
+    #         send_message_ws("alarm", True, False)
+    #
+    #     save_button_data(payload, influxdb_client)
 
     elif msg.topic == "buzzer":
-        print(payload)
+        send_message_ws(payload["name"], payload)
         save_buzzer_data(payload, influxdb_client)
 
     elif msg.topic == "dht":
-        message = {
-            "display": ("Humidity: " + str(payload['humidity']) + "\n" +
-                        "Temperature: " + str(payload['temperature']))
-        }
-
-        msg = json.dumps(message)
-        mqtt_client.publish("lcd-display", payload=msg)
+        send_message_ws(payload["name"], payload)
+        handle_dht(payload)
+        # message = {
+        #     "display": ("Humidity: " + str(payload['humidity']) + "\n" +
+        #                 "Temperature: " + str(payload['temperature']))
+        # }
+        #
+        # msg = json.dumps(message)
+        # mqtt_client.publish("lcd-display", payload=msg)
+        # save_dht_data(payload, influxdb_client)
         save_dht_data(payload, influxdb_client)
 
+
     elif msg.topic == "diode":
+        send_message_ws(payload["name"], payload)
         save_diode_data(payload, influxdb_client)
 
-    elif msg.topic == "dms":
-        key_list = [str(p) for p in pin_code]
-        key = payload['key']
-        if ',' in key:
-            list = key.split(',')
-            check_key_list = [l.strip() for l in list]
-            if key_list == check_key_list:
-                if system_on:
-                    msg = json.dumps({"event": "system-off"})
-                    mqtt_client.publish("system-off", payload=msg)
-                    system_on = False
-                    if alarm_on:
-                        msg = json.dumps({"event": "alarm-off"})
-                        mqtt_client.publish("alarm-off", payload=msg)
-                        save_alarm_data(False, time.time(), influxdb_client)
-                        alarm_on = False
-                else:
-                    time.sleep(10)
-                    msg = json.dumps({"event": "system-on"})
-                    mqtt_client.publish("system-on", payload=msg)
-                    system_on = True
+    # elif msg.topic == "dms":
+    #     send_message_ws(payload["name"], payload)
+    #     handle_dms(payload)
+    #     # key_list = [str(p) for p in pin_code]
+    #     # key = payload['key']
+    #     # if ',' in key:
+    #     #     list = key.split(',')
+    #     #     check_key_list = [l.strip() for l in list]
+    #     #     if key_list == check_key_list:
+    #     #         if system_on:
+    #     #             msg = json.dumps({"event": "system-off"})
+    #     #             mqtt_client.publish("system-off", payload=msg)
+    #     #             system_on = False
+    #     #             send_message_ws("system", False, False)
+    #     #
+    #     #             if alarm_on:
+    #     #                 msg = json.dumps({"event": "alarm-off"})
+    #     #                 mqtt_client.publish("alarm-off", payload=msg)
+    #     #                 save_alarm_data(False, time.time(), influxdb_client)
+    #     #                 alarm_on = False
+    #     #                 send_message_ws("alarm", False, False)
+    #     #
+    #     #         else:
+    #     #             time.sleep(10)
+    #     #             msg = json.dumps({"event": "system-on"})
+    #     #             mqtt_client.publish("system-on", payload=msg)
+    #     #             system_on = True
+    #     #             send_message_ws("system", True, False)
+    #
+    #     save_dms_data(payload, influxdb_client)
 
-        save_dms_data(payload, influxdb_client)
-
-    elif msg.topic == "ir":
-        if payload['button'] == "0":
-            msg = json.dumps({"command": "OFF"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "1":
-            msg = json.dumps({"command": "WHITE"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "2":
-            msg = json.dumps({"command": "RED"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "3":
-            msg = json.dumps({"command": "GREEN"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "4":
-            msg = json.dumps({"command": "BLUE"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "5":
-            msg = json.dumps({"command": "YELLOW"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "6":
-            msg = json.dumps({"command": "PURPLE"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        elif payload['button'] == "7":
-            msg = json.dumps({"command": "LIGHT_BLUE"})
-            mqtt_client.publish("rgb_commands", payload=msg)
-
-        save_ir_data(payload, influxdb_client)
+    # elif msg.topic == "ir":
+    #     send_message_ws(payload["name"], payload)
+    #     handle_ir(payload)
+    #     # if payload['button'] == "0":
+    #     #     msg = json.dumps({"command": "OFF"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "1":
+    #     #     msg = json.dumps({"command": "WHITE"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "2":
+    #     #     msg = json.dumps({"command": "RED"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "3":
+    #     #     msg = json.dumps({"command": "GREEN"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "4":
+    #     #     msg = json.dumps({"command": "BLUE"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "5":
+    #     #     msg = json.dumps({"command": "YELLOW"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "6":
+    #     #     msg = json.dumps({"command": "PURPLE"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #     #
+    #     # elif payload['button'] == "7":
+    #     #     msg = json.dumps({"command": "LIGHT_BLUE"})
+    #     #     mqtt_client.publish("rgb_commands", payload=msg)
+    #
+    #     save_ir_data(payload, influxdb_client)
 
     elif msg.topic == "pir":
+        send_message_ws(payload["name"], payload)
         save_pir_data(payload, influxdb_client)
+        handle_pir(payload)
 
-        if payload["name"] == "DPIR1":
-            msg = json.dumps({"event": "turn-on"})
-            mqtt_client.publish("dpir1-light-on", payload=msg)
-
-            event_timestamp = payload["timestamp"]
-            if not isinstance(event_timestamp, datetime):
-                event_timestamp = datetime.fromtimestamp(event_timestamp)
-            start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
-            end_time = int(event_timestamp.timestamp())
-
-            query = f"""
-                from(bucket: "iot")
-                  |> range(start: {start_time}, stop: {end_time})
-                  |> filter(fn: (r) => r["_measurement"] == "uds_data")
-                  |> filter(fn: (r) => r["_field"] == "distance")
-                  |> filter(fn: (r) => r["name"] == "DUS1")
-                """
-            last_dus1_data = handle_influx_query(query)
-            if last_dus1_data['status'] == "success":
-                sorted_data = sorted(last_dus1_data['data'], key=lambda x: x['_time'])
-                if len(sorted_data) >= 1:
-                    first_distance = sorted_data[0]['_value']
-                    last_distance = sorted_data[-1]['_value']
-
-                    with people_inside_lock:
-                        if last_distance > first_distance:
-                            people_inside += 1
-                        elif last_distance < first_distance:
-                            people_inside -= 1
-                            if people_inside < 0:
-                                people_inside = 0
-                        else:
-                            pass
-
-                print("People inside: ", people_inside)
-                save_people_data(people_inside, time.time(), influxdb_client)
-
-        if payload["name"] == "DPIR2":
-            event_timestamp = payload["timestamp"]
-            if not isinstance(event_timestamp, datetime):
-                event_timestamp = datetime.fromtimestamp(event_timestamp)
-            start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
-            end_time = int(event_timestamp.timestamp())
-
-            query = f"""
-                from(bucket: "iot")
-                  |> range(start: {start_time}, stop: {end_time})
-                  |> filter(fn: (r) => r["_measurement"] == "uds_data")
-                  |> filter(fn: (r) => r["_field"] == "distance")
-                  |> filter(fn: (r) => r["name"] == "DUS2")
-                """
-            last_dus2_data = handle_influx_query(query)
-            if last_dus2_data['status'] == "success":
-                sorted_data = sorted(last_dus2_data['data'], key=lambda x: x['_time'])
-                if len(sorted_data) >= 1:
-                    first_distance = sorted_data[0]['_value']
-                    last_distance = sorted_data[-1]['_value']
-
-                    with people_inside_lock:
-                        if last_distance > first_distance:
-                            people_inside += 1
-                        elif last_distance < first_distance:
-                            people_inside -= 1
-                            if people_inside < 0:
-                                people_inside = 0
-                        else:
-                            pass
-
-                print("People inside: ", people_inside)
-                save_people_data(people_inside, time.time(), influxdb_client)
-
-        if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
-            'name'] == 'RPIR4':
-            if people_inside == 0 and (alarm_on is not True) and (system_on is True):
-                msg = json.dumps({"event": "alarm-on-" + payload['name']})
-                mqtt_client.publish("alarm-on", payload=msg)
-                save_alarm_data(True, time.time(), influxdb_client)
-                print("ALARM ", payload['name'])
-                alarm_on = True
+        # if payload["name"] == "DPIR1":
+        #     msg = json.dumps({"event": "turn-on"})
+        #     mqtt_client.publish("dpir1-light-on", payload=msg)
+        #
+        #     event_timestamp = payload["timestamp"]
+        #     if not isinstance(event_timestamp, datetime):
+        #         event_timestamp = datetime.fromtimestamp(event_timestamp)
+        #     start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
+        #     end_time = int(event_timestamp.timestamp())
+        #
+        #     query = f"""
+        #         from(bucket: "iot")
+        #           |> range(start: {start_time}, stop: {end_time})
+        #           |> filter(fn: (r) => r["_measurement"] == "uds_data")
+        #           |> filter(fn: (r) => r["_field"] == "distance")
+        #           |> filter(fn: (r) => r["name"] == "DUS1")
+        #         """
+        #     last_dus1_data = handle_influx_query(query)
+        #     if last_dus1_data['status'] == "success":
+        #         sorted_data = sorted(last_dus1_data['data'], key=lambda x: x['_time'])
+        #         if len(sorted_data) >= 1:
+        #             first_distance = sorted_data[0]['_value']
+        #             last_distance = sorted_data[-1]['_value']
+        #
+        #             with people_inside_lock:
+        #                 if last_distance > first_distance:
+        #                     people_inside += 1
+        #                 elif last_distance < first_distance:
+        #                     people_inside -= 1
+        #                     if people_inside < 0:
+        #                         people_inside = 0
+        #                 else:
+        #                     pass
+        #
+        #         print("People inside: ", people_inside)
+        #         save_people_data(people_inside, time.time(), influxdb_client)
+        #
+        # if payload["name"] == "DPIR2":
+        #     event_timestamp = payload["timestamp"]
+        #     if not isinstance(event_timestamp, datetime):
+        #         event_timestamp = datetime.fromtimestamp(event_timestamp)
+        #     start_time = int((event_timestamp - timedelta(seconds=60)).timestamp())
+        #     end_time = int(event_timestamp.timestamp())
+        #
+        #     query = f"""
+        #         from(bucket: "iot")
+        #           |> range(start: {start_time}, stop: {end_time})
+        #           |> filter(fn: (r) => r["_measurement"] == "uds_data")
+        #           |> filter(fn: (r) => r["_field"] == "distance")
+        #           |> filter(fn: (r) => r["name"] == "DUS2")
+        #         """
+        #     last_dus2_data = handle_influx_query(query)
+        #     if last_dus2_data['status'] == "success":
+        #         sorted_data = sorted(last_dus2_data['data'], key=lambda x: x['_time'])
+        #         if len(sorted_data) >= 1:
+        #             first_distance = sorted_data[0]['_value']
+        #             last_distance = sorted_data[-1]['_value']
+        #
+        #             with people_inside_lock:
+        #                 if last_distance > first_distance:
+        #                     people_inside += 1
+        #                 elif last_distance < first_distance:
+        #                     people_inside -= 1
+        #                     if people_inside < 0:
+        #                         people_inside = 0
+        #                 else:
+        #                     pass
+        #
+        #         print("People inside: ", people_inside)
+        #         save_people_data(people_inside, time.time(), influxdb_client)
+        #
+        # if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
+        #     'name'] == 'RPIR4':
+        #     if people_inside == 0 and (alarm_on is not True) and (system_on is True):
+        #         msg = json.dumps({"event": "alarm-on-" + payload['name']})
+        #         mqtt_client.publish("alarm-on", payload=msg)
+        #         save_alarm_data(True, time.time(), influxdb_client)
+        #         print("ALARM ", payload['name'])
+        #         alarm_on = True
 
     elif msg.topic == "gyro":
+        send_message_ws(payload["name"], payload)
         save_gyro_data(payload, influxdb_client)
+        handle_gyro(payload)
 
-        acceleration = float(payload['acceleration'])
-        rotation = float(payload['rotation'])
-        print("acceleration: ", acceleration)
-        print("rotation: ", rotation)
+        # acceleration = float(payload['acceleration'])
+        # rotation = float(payload['rotation'])
+        # print("acceleration: ", acceleration)
+        # print("rotation: ", rotation)
+        #
+        # if acceleration < -9.5 or acceleration > 9.5:
+        #     if (alarm_on is not True) and (system_on is True):
+        #         msg = json.dumps({"event": "alarm-on-gyro"})
+        #         mqtt_client.publish("alarm-on", payload=msg)
+        #         alarm_on = True
+        #         save_alarm_data(True, time.time(), influxdb_client)
+        #         send_message_ws("alarm", True, False)
+        #
+        # if rotation < -175 or rotation > 175:
+        #     if (alarm_on is not True) and (system_on is True):
+        #         msg = json.dumps({"event": "alarm-on-gyro"})
+        #         mqtt_client.publish("alarm-on", payload=msg)
+        #         alarm_on = True
+        #         save_alarm_data(True, time.time(), influxdb_client)
+        #         send_message_ws("alarm", True, False)
 
-        if acceleration < -9.5 or acceleration > 9.5:
-            if (alarm_on is not True) and (system_on is True):
-                msg = json.dumps({"event": "alarm-on-gyro"})
-                mqtt_client.publish("alarm-on", payload=msg)
-                alarm_on = True
-                save_alarm_data(True, time.time(), influxdb_client)
 
-        if rotation < -175 or rotation > 175:
-            if (alarm_on is not True) and (system_on is True):
-                msg = json.dumps({"event": "alarm-on-gyro"})
-                mqtt_client.publish("alarm-on", payload=msg)
-                alarm_on = True
-                save_alarm_data(True, time.time(), influxdb_client)
 
     elif msg.topic == "lcd":
+        send_message_ws(payload["name"], payload)
         save_lcd_data(payload, influxdb_client)
-    elif msg.topic == "rgb_led":
-        save_rgb_data(payload, influxdb_client)
-    elif msg.topic == "fdss":
-        save_fdss_data(payload, influxdb_client)
-    elif msg.topic == "alarm-clock-pi":
-        if payload["action"] == "add":
-            alarm_clock_times.append(payload["time"])
-        elif payload["action"] == "remove":
-            alarm_clock_times.remove(payload["time"])
-        elif payload["action"] == "turn-off":
-            alarm_clock_on = False
-            msg = json.dumps({"event": "alarm-off"})
-            mqtt_client.publish("alarm-clock-server", payload=msg)
 
+
+    elif msg.topic == "rgb_led":
+        send_message_ws(payload["name"], payload)
+        save_rgb_data(payload, influxdb_client)
+
+
+    elif msg.topic == "fdss":
+        send_message_ws(payload["name"], payload)
+        save_fdss_data(payload, influxdb_client)
+
+
+    # elif msg.topic == "alarm-clock-pi":
+    #     send_message_ws(payload["name"], payload)
+    #     handle_alarm_clock_pi(payload)
+    #     # if payload["action"] == "add":
+    #     #     alarm_clock_times.append(payload["time"])
+    #     # elif payload["action"] == "remove":
+    #     #     alarm_clock_times.remove(payload["time"])
+    #     # elif payload["action"] == "turn-off":
+    #     #     alarm_clock_on = False
+    #     #     msg = json.dumps({"event": "alarm-off"})
+    #     #     mqtt_client.publish("alarm-clock-server", payload=msg)
+    #     #     send_message_ws("alarm_clock", False, False)
 
 def handle_influx_query(query):
     try:
