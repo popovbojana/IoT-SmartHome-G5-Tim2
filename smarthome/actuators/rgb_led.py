@@ -125,5 +125,6 @@ def run_rgb_loop(command, rgb_led, delay, callback, stop_event, settings, publis
             rgb_led.turnOff()
             callback("OFF", "RGB_LED_OFF", settings, publish_event)
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

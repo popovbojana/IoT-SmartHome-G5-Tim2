@@ -94,5 +94,6 @@ def run_ir_loop(ir, delay, callback, stop_event, settings, publish_event):
             if hex(ir.buttons[button]) == inData:
                 callback(ir.button_names[button], "IR_BUTTON_" + inData.upper(), settings, publish_event)
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

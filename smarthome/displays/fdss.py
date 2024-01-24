@@ -53,5 +53,6 @@ def run_fdss_loop(fdss, delay, callback, stop_event, settings, publish_event):
         a, b = fdss.show_time()
         callback(a, b, "FDSS_OK", settings, publish_event)
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

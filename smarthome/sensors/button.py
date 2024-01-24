@@ -39,4 +39,5 @@ def run_button_loop(button, delay, callback, stop_event, settings, publish_event
         switch_event.clear()
 
         if stop_event.is_set():
+            GPIO.cleanup()
             break

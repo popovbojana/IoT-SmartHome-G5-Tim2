@@ -49,5 +49,6 @@ def run_uds_loop(uds, delay, callback, stop_event, settings, publish_event):
             callback(distance, "UDSLIB_NONE", settings, publish_event)
 
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

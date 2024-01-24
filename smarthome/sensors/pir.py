@@ -22,5 +22,6 @@ def run_pir_loop(pir, delay, callback, stop_event, settings, publish_event):
         if pir.read_pir():
             callback("Motion detected", True, "PIR_OK", settings, publish_event)
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

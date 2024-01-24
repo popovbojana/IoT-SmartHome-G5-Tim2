@@ -202,5 +202,6 @@ def run_lcd_loop(display, lcd, delay, callback, stop_event, settings, publish_ev
         lcd.message(str(display))
         callback(str(display), "LCD_OK", settings, publish_event)
         if stop_event.is_set():
+            GPIO.cleanup()
             break
         time.sleep(delay)

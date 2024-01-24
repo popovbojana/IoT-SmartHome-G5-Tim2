@@ -35,4 +35,5 @@ def run_buzzer_loop(buzzer, callback, stop_event, settings, publish_event, alarm
         alarm_event.clear()
 
         if stop_event.is_set():
+            GPIO.cleanup()
             break
