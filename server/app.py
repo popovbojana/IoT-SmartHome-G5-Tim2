@@ -225,8 +225,6 @@ def handle_gyro(payload):
     global alarm_on, system_on
     acceleration = float(payload['acceleration'])
     rotation = float(payload['rotation'])
-    print("acceleration: ", acceleration)
-    print("rotation: ", rotation)
 
     if acceleration < -9.5 or acceleration > 9.5:
         if (alarm_on is not True) and (system_on is True):
@@ -325,7 +323,7 @@ def check_and_trigger_alarms():
 
     current_time = time.strftime('%H:%M')
     if current_time == alarm_clock_time and not alarm_clock_on:
-        print("BUDILNIK")
+        print("ALARM CLOCK")
         msg = json.dumps({"event": "alarm-on"})
         mqtt_client.publish("alarm-clock-server", payload=msg)
         alarm_clock_on = True

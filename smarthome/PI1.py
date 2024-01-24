@@ -11,7 +11,6 @@ from components.button import run_button
 from components.dms import run_dms
 from components.diode import run_diode
 from components.buzzer import run_buzzer
-from settings.settings import print_lock
 from settings.broker_settings import HOST, PORT
 
 

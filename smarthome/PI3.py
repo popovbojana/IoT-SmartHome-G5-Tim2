@@ -11,7 +11,6 @@ from components.buzzer import run_buzzer
 from components.fdss import run_fdss
 from components.rgb_led import run_rgb_led
 from components.ir import run_ir
-from settings.settings import print_lock
 from settings.broker_settings import HOST, PORT
 
 
@@ -91,7 +90,7 @@ def on_message(client, userdata, msg):
 
     elif msg.topic == 'alarm-on':
         alarm_event.set()
-        print(payload)
+        print("ALARM ON")
     elif msg.topic == 'alarm-off':
         alarm_event.clear()
         print("ALARM OFF")
@@ -103,11 +102,11 @@ def on_message(client, userdata, msg):
         print("SYSTEM OFF")
     elif msg.topic == 'alarm-clock-server':
         if payload["event"] == "alarm-on":
-            print("UKLJUCIO budilnik")
+            print("ALARM CLOCK ON")
             alarm_clock_event.set()
         elif payload["event"] == "alarm-off":
             alarm_clock_event.clear()
-            print("iskljucen budilnik")
+            print("ALARM CLOCK OFF")
 
 
 if __name__ == "__main__":

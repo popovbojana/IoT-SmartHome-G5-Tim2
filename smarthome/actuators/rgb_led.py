@@ -57,41 +57,6 @@ class RGB_LED:
 
 
 def run_rgb_loop(command, rgb_led, delay, callback, stop_event, settings, publish_event):
-# def run_rgb_loop(command, rgb_led, delay, callback, stop_event, settings, publish_event,
-#                  state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event):
-#     while True:
-#         if state_off_event.is_set():
-#             rgb_led.turnOff()
-#             callback("OFF", "RGB_LED_OFF", settings, publish_event)
-#
-#         elif state_white_event.is_set():
-#             rgb_led.white()
-#             callback("WHITE", "RGB_LED_WHITE", settings, publish_event)
-#
-#         elif state_red_event.is_set():
-#             rgb_led.red()
-#             callback("RED", "RGB_LED_RED", settings, publish_event)
-#
-#         elif state_green_event.is_set():
-#             rgb_led.green()
-#             callback("GREEN", "RGB_LED_GREEN", settings, publish_event)
-#
-#         elif state_blue_event.is_set():
-#             rgb_led.blue()
-#             callback("BLUE", "RGB_LED_BLUE", settings, publish_event)
-#
-#         elif state_yellow_event.is_set():
-#             rgb_led.yellow()
-#             callback("YELLOW", "RGB_LED_YELLOW", settings, publish_event)
-#
-#         elif state_purple_event.is_set():
-#             rgb_led.purple()
-#             callback("PURPLE", "RGB_LED_PURPLE", settings, publish_event)
-#
-#         elif state_lightblue_event.is_set():
-#             rgb_led.lightBlue()
-#             callback("LIGHT_BLUE", "RGB_LED_LIGHT_BLUE", settings, publish_event)
-
     while True:
         if command == 'WHITE':
             rgb_led.white()
