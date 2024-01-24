@@ -123,8 +123,10 @@ def save_fdss_data(payload, client):
     point.tag("pi", payload["pi"])
     point.tag("name", payload["name"])
     point.tag("simulated", payload["simulated"])
+    # point.tag("code", payload["code"])
     point.field("alarm_time", payload["alarm_time"])
 
+    print("UPISAO")
     write_api = client.write_api(write_options=SYNCHRONOUS)
     write_api.write(bucket=BUCKET, org=ORG, record=point)
 
