@@ -15,7 +15,6 @@ class DMS:
         ]
         for row_pin in self.row_pins:
             GPIO.setup(row_pin, GPIO.OUT)
-            GPIO.output(row_pin, GPIO.LOW)
         for col_pin in self.col_pins:
             GPIO.setup(col_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
@@ -25,6 +24,7 @@ class DMS:
             for j, col_pin in enumerate(self.col_pins):
                 if not GPIO.input(col_pin):
                     GPIO.output(row_pin, GPIO.LOW)
+                    # GPIO.output(row_pin, GPIO.HIGH)
                     return self.keys[i][j]
             GPIO.output(row_pin, GPIO.LOW)
         return None

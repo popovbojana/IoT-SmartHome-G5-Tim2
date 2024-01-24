@@ -70,7 +70,7 @@ def run_fdss(settings, threads, stop_event, alarm_clock_event):
         print(f"Starting {settings['name']} loop")
         fdss = FDSS(settings['name'], settings['segment_pins'], settings['digit_pins'])
         fdss_thread = threading.Thread(target=run_fdss_loop, args=(fdss, 2, fdss_callback, stop_event, settings,
-                                                                   publish_event))
+                                                                   publish_event, alarm_clock_event))
         fdss_thread.start()
         threads.append(fdss_thread)
         print(f"{settings['name']} loop started")

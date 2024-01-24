@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO
 import time
-import threading
 
 
 class DIODE:
@@ -10,10 +9,10 @@ class DIODE:
         GPIO.setup(self.pin, GPIO.OUT)
 
     def turnOn(self):
-        GPIO.setup(self.pin, GPIO.HIGH)
+        GPIO.output(self.pin, GPIO.HIGH)
 
     def turnOff(self):
-        GPIO.setup(self.pin, GPIO.LOW)
+        GPIO.output(self.pin, GPIO.LOW)
 
 
 def run_diode_loop(diode, callback, stop_event, settings, publish_event):

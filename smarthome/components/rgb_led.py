@@ -50,7 +50,6 @@ def rgb_led_callback(state, code, settings, publish_event):
     }
 
     with counter_lock:
-        print("A")
         rgb_batch.append(('rgb_led', json.dumps(message), 0, False))
         publish_data_counter += 1
 

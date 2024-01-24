@@ -37,9 +37,9 @@ class FDSS:
             for loop in range(0, 7):
                 GPIO.output(self.segment_pins[loop], self.num[s[digit]][loop])
                 if (int(time.ctime()[18:19]) % 2 == 0) and (digit == 1):
-                    GPIO.output(25, 1)
+                    GPIO.output(self.segment_pins[-1], 1)
                 else:
-                    GPIO.output(25, 0)
+                    GPIO.output(self.segment_pins[-1], 0)
                 b = b + str(n)
             GPIO.output(self.digit_pins[digit], 0)
             time.sleep(0.001)
@@ -48,10 +48,20 @@ class FDSS:
         return n, binary
 
 
-def run_fdss_loop(fdss, delay, callback, stop_event, settings, publish_event):
+def run_fdss_loop(fdss, delay, callback, stop_event, settings, publish_event, alarm_clock_event):
     while True:
         a, b = fdss.show_time()
         callback(a, b, "FDSS_OK", settings, publish_event)
+
+        if alarm_clock_event.is_set():
+            while alarm_clock_event.is_set():
+                a, b = fdss.show_time()
+                callback(a, b, "FDSS_ON", settings, publish_event)
+                time.sleep(0.5)
+                a, b = fdss.show_time()
+                callback(a, b, "FDSS_OFF", settings, publish_event)
+                time.sleep(0.5)
+
         if stop_event.is_set():
             GPIO.cleanup()
             break
