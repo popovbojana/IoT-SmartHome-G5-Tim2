@@ -53,7 +53,7 @@ def validate_time_format(time_str):
 def run_displays(settings, threads, stop_event):
     b4sd_settings = settings['Bedroom 4 Digit 7 Segment Display'][0]
 
-    run_fdss(b4sd_settings, threads, stop_event)
+    run_fdss(b4sd_settings, threads, stop_event, alarm_clock_event)
 
 
 alarm_event = threading.Event()
