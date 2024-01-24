@@ -34,6 +34,9 @@ def run_sensors(settings, threads, stop_event):
     run_pir(bir_settings, threads, stop_event)
     run_buzzer(bb_settings, threads, stop_event, alarm_event, system_event, alarm_clock_event)
 
+    ir_settings = settings['Bedroom Infrared'][0]
+    run_ir(ir_settings, threads, stop_event, "0")
+
 
 # def run_actuators(settings, threads, stop_event):
 #     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))

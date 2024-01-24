@@ -7,7 +7,7 @@ from settings.broker_settings import HOST, PORT
 
 rgb_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 
@@ -50,6 +50,7 @@ def rgb_led_callback(state, code, settings, publish_event):
     }
 
     with counter_lock:
+        print("A")
         rgb_batch.append(('rgb_led', json.dumps(message), 0, False))
         publish_data_counter += 1
 

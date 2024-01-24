@@ -12,7 +12,7 @@ def run_button_simulator(delay, callback, stop_event, settings, publish_event):
         time.sleep(delay)
 
         if pushed > 5:
-            callback("Door is unlocked", True, "BUTTON_5_SEC", settings, publish_event)
+            callback("Door is unlocked", True, "z", settings, publish_event)
         else:
             callback("Door is unlocked", True, "BUTTON_OK", settings, publish_event)
 

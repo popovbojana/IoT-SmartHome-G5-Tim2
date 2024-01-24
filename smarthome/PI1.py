@@ -46,42 +46,42 @@ def run_sensors(settings, threads, stop_event):
     run_dms('key', dms_settings, threads, stop_event, system_event)
 
 
-def run_actuators(settings, threads, stop_event):
-    thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
-    thread.start()
-    threads.append(thread)
-
-
-def menu_actuators(settings, threads, stop_event):
-    while not stop_event.is_set():
-        print()
-        option = input("Enter X/x to start actuator menu: ")
-        if option.capitalize() == "X":
-            while True:
-                with print_lock:
-                    print()
-                    print("**** ACTUATOR MENU ****")
-                    print("1) Enter 1 to change light state \n"
-                          "2) Enter 2 to use membrane switch\n"
-                          "3) Enter 3 to exit\n")
-                    option = input("Enter: ")
-                    if option == "1":
-                        dl_settings = settings['Door Light'][0]
-                        run_diode(dl_settings, threads, stop_event)
-                        time.sleep(1)
-                    elif option == "2":
-                        dms_settings = settings['Door Membrane Switch'][0]
-                        key = input("Enter PIN, exp. (0,0,0,0): ")
-                        run_dms(key, dms_settings, threads, stop_event, system_event)
-                        time.sleep(1)
-                    elif option == "3":
-                        print("Exiting the menu. Printing is resumed.")
-                        break
-
-                    else:
-                        print("Entered wrong number, try again :)")
-        else:
-            pass
+# def run_actuators(settings, threads, stop_event):
+#     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
+#     thread.start()
+#     threads.append(thread)
+#
+#
+# def menu_actuators(settings, threads, stop_event):
+#     while not stop_event.is_set():
+#         print()
+#         option = input("Enter X/x to start actuator menu: ")
+#         if option.capitalize() == "X":
+#             while True:
+#                 with print_lock:
+#                     print()
+#                     print("**** ACTUATOR MENU ****")
+#                     print("1) Enter 1 to change light state \n"
+#                           "2) Enter 2 to use membrane switch\n"
+#                           "3) Enter 3 to exit\n")
+#                     option = input("Enter: ")
+#                     if option == "1":
+#                         dl_settings = settings['Door Light'][0]
+#                         run_diode(dl_settings, threads, stop_event)
+#                         time.sleep(1)
+#                     elif option == "2":
+#                         dms_settings = settings['Door Membrane Switch'][0]
+#                         key = input("Enter PIN, exp. (0,0,0,0): ")
+#                         run_dms(key, dms_settings, threads, stop_event, system_event)
+#                         time.sleep(1)
+#                     elif option == "3":
+#                         print("Exiting the menu. Printing is resumed.")
+#                         break
+#
+#                     else:
+#                         print("Entered wrong number, try again :)")
+#         else:
+#             pass
 
 
 alarm_event = threading.Event()
@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     try:
         run_sensors(settings_pi1, threads_pi1, stop_event_pi1)
-        run_actuators(settings_pi1, threads_pi1, stop_event_pi1)
+        # run_actuators(settings_pi1, threads_pi1, stop_event_pi1)
 
         while True:
             time.sleep(1)

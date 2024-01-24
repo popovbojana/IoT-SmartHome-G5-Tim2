@@ -88,7 +88,6 @@ if __name__ == "__main__":
 
     try:
         run_sensors(settings_pi2, threads_pi2, stop_event_pi2)
-        # run_displays(settings_pi2, threads_pi2, stop_event_pi2)
 
         while True:
             time.sleep(1)
