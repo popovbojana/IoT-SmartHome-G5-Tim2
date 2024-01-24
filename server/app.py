@@ -160,6 +160,7 @@ def handle_pir(payload):
                 with people_inside_lock:
                     if last_distance > first_distance:
                         people_inside += 1
+                        send_message_ws("people_inside", people_inside)
                     elif last_distance < first_distance:
                         people_inside -= 1
                         if people_inside < 0:
@@ -169,6 +170,7 @@ def handle_pir(payload):
 
             print("People inside: ", people_inside)
             save_people_data(people_inside, time.time(), influxdb_client)
+            send_message_ws("people_inside", people_inside)
 
     if payload["name"] == "DPIR2":
         event_timestamp = payload["timestamp"]
@@ -203,6 +205,7 @@ def handle_pir(payload):
 
             print("People inside: ", people_inside)
             save_people_data(people_inside, time.time(), influxdb_client)
+            send_message_ws("people_inside", people_inside)
 
     if payload['name'] == 'RPIR1' or payload['name'] == 'RPIR2' or payload['name'] == 'RPIR3' or payload[
         'name'] == 'RPIR4':
