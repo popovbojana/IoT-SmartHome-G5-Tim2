@@ -34,12 +34,17 @@
     font-weight: bolder;
   }
   
-.large-icon {
+  .large-icon {
     padding: 4px;
     font-size: 90px;
     width: 100px;
     height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
+  
   
   .active {
     color: red;
@@ -68,6 +73,7 @@
     align-items: center;
     padding: 10px;
     margin-right: 50px;
+    margin-top: 10px;
   }
   
   .key-row {
@@ -158,4 +164,7 @@
     margin-top: 10px; 
   }
   
-
+.uputstvo {
+  margin-top: 20px;
+  font-size: 20px;
+}

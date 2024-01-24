@@ -17,6 +17,7 @@ import { Pi3Component } from './pi3/pi3.component';
 import { ProbaComponent } from './proba/proba.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { HttpClientModule } from '@angular/common/http';
+import { HistoryComponent } from './history/history.component';
 
 const config: SocketIoConfig = { url: '127.0.0.1:5000', options: {} };
 
@@ -28,7 +29,8 @@ const config: SocketIoConfig = { url: '127.0.0.1:5000', options: {} };
     Pi1Component,
     Pi2Component,
     Pi3Component,
-    ProbaComponent
+    ProbaComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,

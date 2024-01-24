@@ -14,10 +14,13 @@
       <mat-card-header>
         <mat-card-title>ALARM</mat-card-title>
       </mat-card-header>
-      <mat-card-content>
-        <mat-icon class="large-icon" [ngClass]="{ 'active': isAlarmActive }" *ngIf="isAlarmActive">notifications_active</mat-icon>
-        <mat-icon class="large-icon" [ngClass]="{ 'not-active': !isAlarmActive }" *ngIf="!isAlarmActive">notifications_off</mat-icon>
-      </mat-card-content>
+      <mat-card-content class="content-wrapper">
+        <div class="icons-wrapper">
+          <mat-icon class="large-icon" [ngClass]="{ 'active': isAlarmActive }" *ngIf="isAlarmActive">notifications_active</mat-icon>
+          <mat-icon class="large-icon" [ngClass]="{ 'not-active': !isAlarmActive }" *ngIf="!isAlarmActive">notifications_off</mat-icon>
+        </div>
+        <button mat-raised-button color="primary" (click)="history()">History</button>
+        </mat-card-content>
     </mat-card>
   
     <mat-card class="example-card">
@@ -37,8 +40,11 @@
       <mat-card-header>
         <mat-card-title>PEOPLE INSIDE</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="large-icon">
-        {{peopleInside}}
+      <mat-card-content class="content-wrapper">
+        <div class="icons-wrapper">
+          <p class="large-icon">{{peopleInside}}</p>
+        </div>
+        <button mat-raised-button color="primary" (click)="history()">History</button>
       </mat-card-content>
     </mat-card>
 
@@ -114,6 +120,9 @@
       </mat-expansion-panel-header>
       
       <div class="keypad-container">
+        <div class="content-wrapper">
+          <p class="uputstvo">0 - off, 1 - white, 2 - red, 3 - green</p>
+          <p class="uputstvo">4 - blue, 5 - yellow, 6 - purple, 7 - light blue</p>
         <mat-card class="keypad">
         <div class="key-row" *ngFor="let row of receiverRows">
             <div class="key" *ngFor="let key of row" (click)="onKeyPressReceiver(key)">
@@ -121,15 +130,7 @@
             </div>
         </div>
         </mat-card>
-        <!-- <div class="controls">
-        <div class="passcode-input">
-            <div class="digit" *ngFor="let digit of passcode">{{ digit }}</div>
         </div>
-        <div class="buttons">
-            <button mat-raised-button color="primary" (click)="onApplyClickDMS()">Apply</button>
-            <button mat-raised-button color="warn" (click)="onCancelClickDMS()">Cancel</button>
-        </div>
-        </div> -->
     </div>
 
     </mat-expansion-panel>

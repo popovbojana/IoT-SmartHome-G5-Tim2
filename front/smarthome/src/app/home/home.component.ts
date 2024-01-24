@@ -3,6 +3,7 @@ import { AlarmClock, DevicesService } from '../service/devices/devices.service';
 import { DMS } from '../devices/dms';
 import { IR } from '../devices/ir';
 import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -34,7 +35,7 @@ export class HomeComponent implements OnInit {
 
   passcode: string[] = ['', '', '', ''];
 
-  constructor(private deviceService: DevicesService, private socket: Socket) { }
+  constructor(private deviceService: DevicesService, private socket: Socket, private router: Router) { }
 
   ngOnInit() {
     //system
@@ -167,4 +168,12 @@ export class HomeComponent implements OnInit {
       console.log(response);
     });
   }
+
+  history(): void {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      window.location.reload();
+    });
+    this.router.navigate(['history']);
+  }
+
 }
