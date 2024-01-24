@@ -57,7 +57,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     try:
         payload = json.loads(msg.payload.decode())
-        # print(payload)
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
         print(f"Invalid payload: {msg.payload}")
@@ -80,7 +79,6 @@ if __name__ == "__main__":
     stop_event_pi2 = threading.Event()
 
     mqtt_client = mqtt.Client()
-    # mqtt_client.username_pw_set(username="client", password="password")
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = lambda client, userdata, msg: on_message(client, userdata, msg)
     mqtt_client.connect(HOST, PORT, 60)

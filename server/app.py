@@ -359,54 +359,48 @@ def on_message(client, userdata, msg):
         return
 
     if msg.topic == "uds":
-        send_message_ws(payload["name"], payload)
         save_uds_data(payload, influxdb_client)
+        send_message_ws(payload["name"], payload)
 
     elif msg.topic == "button":
+        save_button_data(payload, influxdb_client)
         send_message_ws(payload["name"], payload)
         handle_button(payload)
-        save_button_data(payload, influxdb_client)
 
     elif msg.topic == "buzzer":
-        send_message_ws(payload["name"], payload)
         save_buzzer_data(payload, influxdb_client)
+        send_message_ws(payload["name"], payload)
 
     elif msg.topic == "dht":
+        save_dht_data(payload, influxdb_client)
         send_message_ws(payload["name"], payload)
         handle_dht(payload)
-        save_dht_data(payload, influxdb_client)
-
 
     elif msg.topic == "diode":
-        send_message_ws(payload["name"], payload)
         save_diode_data(payload, influxdb_client)
-
+        send_message_ws(payload["name"], payload)
 
     elif msg.topic == "pir":
-        send_message_ws(payload["name"], payload)
         save_pir_data(payload, influxdb_client)
+        send_message_ws(payload["name"], payload)
         handle_pir(payload)
 
-
     elif msg.topic == "gyro":
-        send_message_ws(payload["name"], payload)
         save_gyro_data(payload, influxdb_client)
+        send_message_ws(payload["name"], payload)
         handle_gyro(payload)
 
-
     elif msg.topic == "lcd":
-        send_message_ws(payload["name"], payload)
         save_lcd_data(payload, influxdb_client)
-
+        send_message_ws(payload["name"], payload)
 
     elif msg.topic == "rgb_led":
-        send_message_ws(payload["name"], payload)
         save_rgb_data(payload, influxdb_client)
-
+        send_message_ws(payload["name"], payload)
 
     elif msg.topic == "fdss":
-        send_message_ws(payload["name"], payload)
         save_fdss_data(payload, influxdb_client)
+        send_message_ws(payload["name"], payload)
 
 
 def handle_influx_query(query):

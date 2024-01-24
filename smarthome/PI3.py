@@ -34,14 +34,11 @@ def run_sensors(settings, threads, stop_event):
     run_pir(bir_settings, threads, stop_event)
     run_buzzer(bb_settings, threads, stop_event, alarm_event, system_event, alarm_clock_event)
 
+
+def run_actuators(settings, threads, stop_event):
     ir_settings = settings['Bedroom Infrared'][0]
+
     run_ir(ir_settings, threads, stop_event, "0")
-
-
-# def run_actuators(settings, threads, stop_event):
-#     thread = threading.Thread(target=menu_actuators, args=(settings, threads, stop_event,))
-#     thread.start()
-#     threads.append(thread)
 
 
 def validate_time_format(time_str):
@@ -51,63 +48,6 @@ def validate_time_format(time_str):
         return True
     else:
         return False
-
-
-# def menu_actuators(settings, threads, stop_event):
-#     while not stop_event.is_set():
-#         print()
-#         option = input("Enter X/x to start actuator menu: ")
-#         if option.capitalize() == "X":
-#             while True:
-#                 with print_lock:
-#                     print()
-#                     print("**** ACTUATOR MENU ****")
-#                     print("1) Enter 1 to buzz\n"
-#                           "2) Enter 2 for RGB\n"
-#                           "3) Enter 3 for IR Receiver\n"
-#                           "4) Enter 4 for setting an alarm\n"
-#                           "5) Enter 5 for setting off an alarm\n"
-#                           "6) Enter 6 for removing an alarm\n"
-#                           "7) Enter 7 to exit\n")
-#                     option = input("Enter: ")
-#                     if option == "1":
-#                         bb_settings = settings['Bedroom Buzzer'][0]
-#                         duration = input("Enter duration: ")
-#                         run_buzzer(bb_settings, threads, stop_event, duration)
-#                         time.sleep(int(duration))
-#                     elif option == "2":
-#                         ir_settings = settings['Bedroom Infrared'][0]
-#                         ir_button = input("Enter (LEFT, RIGHT, UP, DOWN, 2, 3, 1, OK, 4, 5, 6, 7, 8, 9, *, 0, #) to select command: ")
-#                         if ir_button.upper() not in ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0", "#"]:
-#                             break
-#                         else:
-#                             run_ir(ir_settings, threads, stop_event, ir_button)
-#                             time.sleep(1)
-#                     elif option == "4":
-#                         alarm_time = input("Enter what time you want your alarm to turn on with format HH:MM: ")
-#                         if validate_time_format(alarm_time):
-#                             msg = json.dumps({"time": alarm_time, "action": "add"})
-#                             mqtt_client.publish("alarm-clock-pi", payload=msg)
-#                         else:
-#                             print("Invalid time format. Please enter the time in HH:MM format.")
-#                     elif option == "5":
-#                         msg = json.dumps({"time": "empty", "action": "turn-off"})
-#                         mqtt_client.publish("alarm-clock-pi", payload=msg)
-#                     elif option == "6":
-#                         alarm_time = input("Enter what alarm you want to remove with format HH:MM: ")
-#                         if validate_time_format(alarm_time):
-#                             msg = json.dumps({"time": alarm_time, "action": "remove"})
-#                             mqtt_client.publish("alarm-clock-pi", payload=msg)
-#                         else:
-#                             print("Invalid time format. Please enter the time in HH:MM format.")
-#                     elif option == "7":
-#                         print("Exiting the menu. Printing is resumed.")
-#                         break
-#
-#                     else:
-#                         print("Entered wrong number, try again :)")
-#         else:
-#             pass
 
 
 def run_displays(settings, threads, stop_event):
@@ -120,21 +60,6 @@ alarm_event = threading.Event()
 system_event = threading.Event()
 alarm_clock_event = threading.Event()
 
-# state_off_event = threading.Event()
-# state_white_event = threading.Event()
-# state_red_event = threading.Event()
-# state_green_event = threading.Event()
-# state_blue_event = threading.Event()
-# state_yellow_event = threading.Event()
-# state_purple_event = threading.Event()
-# state_lightblue_event = threading.Event()
-#
-#
-# def set_rgb_states(state_to_set, *other_states):
-#     state_to_set.set()
-#
-#     for state in other_states:
-#         state.clear()
 
 def on_connect(client, userdata, flags, rc):
     topics = ['rgb_commands', 'alarm-on', 'alarm-off', 'system-on', 'system-off', 'alarm-clock-on', 'alarm-clock-server']
@@ -163,23 +88,6 @@ def on_message(client, userdata, msg):
         command = payload['command']
         brgb_settings = settings_pi3['Bedroom RGB'][0]
         run_rgb_led(command, brgb_settings, threads_pi3, stop_event_pi3)
-
-        # if command == "OFF":
-        #     set_rgb_states(state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "WHITE":
-        #     set_rgb_states(state_white_event, state_off_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "RED":
-        #     set_rgb_states(state_red_event, state_off_event, state_white_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "GREEN":
-        #     set_rgb_states(state_green_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "BLUE":
-        #     set_rgb_states(state_blue_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "YELLOW":
-        #     set_rgb_states(state_yellow_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "PURPLE":
-        #     set_rgb_states(state_purple_event, state_off_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
-        # elif command == "LIGHT_BLUE":
-        #     set_rgb_states(state_lightblue_event, state_white_event, state_red_event, state_green_event, state_blue_event, state_yellow_event, state_purple_event, state_lightblue_event)
 
     elif msg.topic == 'alarm-on':
         alarm_event.set()
@@ -210,7 +118,6 @@ if __name__ == "__main__":
 
     # MQTT Config
     mqtt_client = mqtt.Client()
-    # mqtt_client.username_pw_set(username="client", password="password")
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = lambda client, userdata, msg: on_message(client, userdata, msg)
     mqtt_client.connect(HOST, PORT, 60)
@@ -218,7 +125,7 @@ if __name__ == "__main__":
 
     try:
         run_sensors(settings_pi3, threads_pi3, stop_event_pi3)
-        # run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
+        run_actuators(settings_pi3, threads_pi3, stop_event_pi3)
         run_displays(settings_pi3, threads_pi3, stop_event_pi3)
 
         while True:
