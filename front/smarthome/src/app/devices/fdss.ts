@@ -3,6 +3,6 @@ export interface FDSS{
     name: string;
     simulated: boolean;
     timestamp: string;
-    alarm_time: number;
+    alarm_time: string;
     binary: number
 }
