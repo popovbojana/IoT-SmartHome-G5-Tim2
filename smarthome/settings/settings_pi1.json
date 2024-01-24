@@ -4,13 +4,13 @@
       "pi": "PI1",
       "name": "RDH1",
       "simulated": true,
-      "pin": 26
+      "pin": 2
     },
     {
       "pi": "PI1",
       "name": "RDH2",
       "simulated": true,
-      "pin": 6
+      "pin": 4
     }
   ],
   "Door Ultrasonic Sensor": [
@@ -18,8 +18,8 @@
       "pi": "PI1",
       "name": "DUS1",
       "simulated": true,
-      "trig_pin": 23,
-      "echo_pin": 24
+      "trig_pin": 27,
+      "echo_pin": 22
     }
   ],
   "Door Motion Sensor": [
@@ -27,7 +27,7 @@
       "pi": "PI1",
       "name": "DPIR1",
       "simulated": true,
-      "pin": 17
+      "pin": 11
     }
   ],
   "Room PIR": [
@@ -35,13 +35,13 @@
       "pi": "PI1",
       "name": "RPIR1",
       "simulated": true,
-      "pin": 22
+      "pin": 5
     },
     {
       "pi": "PI1",
       "name": "RPIR2",
       "simulated": true,
-      "pin": 27
+      "pin": 6
     }
   ],
   "Door Sensor": [
@@ -49,7 +49,7 @@
       "pi": "PI1",
       "name": "DS1",
       "simulated": true,
-      "pin": 23
+      "pin": 13
     }
   ],
   "Door Membrane Switch": [
@@ -67,7 +67,7 @@
       "pi": "PI1",
       "name": "DL",
       "simulated": true,
-      "pin": 18
+      "pin": 19
     }
   ],
   "Door Buzzer": [
@@ -75,7 +75,7 @@
       "pi": "PI1",
       "name": "DB",
       "simulated": true,
-      "pin": 17
+      "pin": 26
       }
   ]
 }
