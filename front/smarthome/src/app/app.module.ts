@@ -16,6 +16,7 @@ import { Pi2Component } from './pi2/pi2.component';
 import { Pi3Component } from './pi3/pi3.component';
 import { ProbaComponent } from './proba/proba.component';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { HttpClientModule } from '@angular/common/http';
 
 const config: SocketIoConfig = { url: '127.0.0.1:5000', options: {} };
 
@@ -38,7 +39,8 @@ const config: SocketIoConfig = { url: '127.0.0.1:5000', options: {} };
     BrowserAnimationsModule,
     MatButtonModule,
     FormsModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

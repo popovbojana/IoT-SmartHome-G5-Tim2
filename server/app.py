@@ -21,7 +21,7 @@ pin_code = ['0', '0', '0', '0']
 system_on = False
 alarm_on = False
 
-alarm_clock_times = []
+alarm_clock_time = ''
 alarm_clock_on = False
 
 # InfluxDB Config
@@ -243,13 +243,12 @@ def handle_gyro(payload):
 
 
 def handle_alarm_clock_pi(payload):
-    global alarm_clock_on
+    global alarm_clock_on, alarm_clock_time
     if payload["action"] == "add":
-        alarm_clock_times.append(payload["time"])
-    elif payload["action"] == "remove":
-        alarm_clock_times.remove(payload["time"])
+        alarm_clock_time = payload["time"]
     elif payload["action"] == "turn-off":
         alarm_clock_on = False
+        alarm_clock_time = ''
         msg = json.dumps({"event": "alarm-off"})
         mqtt_client.publish("alarm-clock-server", payload=msg)
         send_message_ws("alarm_clock", False)
@@ -268,7 +267,7 @@ def dms_endpoint():
             except Exception as e:
                 print(e)
 
-            return jsonify({"response": "Ir processed successfully"})
+            return jsonify({"response": "DMS processed successfully"})
         else:
             return jsonify({"response": "error - No JSON data received"})
     except Exception as e:
@@ -315,10 +314,10 @@ def alarm_clock_pi_endpoint():
 
 
 def check_and_trigger_alarms():
-    global alarm_clock_times, alarm_clock_on
+    global alarm_clock_time, alarm_clock_on
 
     current_time = time.strftime('%H:%M')
-    if current_time in alarm_clock_times and not alarm_clock_on:
+    if current_time == alarm_clock_time and not alarm_clock_on:
         print("BUDILNIK")
         msg = json.dumps({"event": "alarm-on"})
         mqtt_client.publish("alarm-clock-server", payload=msg)
@@ -351,7 +350,7 @@ mqtt_client.loop_start()
 
 
 def on_message(client, userdata, msg):
-    global people_inside, system_on, alarm_on, alarm_clock_times, alarm_clock_on
+    global people_inside, system_on, alarm_on, alarm_clock_on
 
     try:
         payload = json.loads(msg.payload.decode())
