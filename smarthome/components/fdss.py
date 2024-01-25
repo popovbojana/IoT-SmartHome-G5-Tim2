@@ -7,7 +7,7 @@ from settings.broker_settings import HOST, PORT
 
 fdss_batch = []
 publish_data_counter = 0
-publish_data_limit = 5
+publish_data_limit = 1
 counter_lock = threading.Lock()
 
 
