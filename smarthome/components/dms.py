@@ -64,6 +64,6 @@ def run_dms(key, settings, threads, stop_event, system_event):
         from sensors.dms import run_dms_loop, DMS
         dms = DMS(settings['name'], settings['row_pins'], settings['col_pins'])
         dms_thread = threading.Thread(target=run_dms_loop, args=(dms, 2, dms_callback, stop_event, settings,
-                                                                 publish_event))
+                                                                 publish_event, system_event))
         dms_thread.start()
         threads.append(dms_thread)

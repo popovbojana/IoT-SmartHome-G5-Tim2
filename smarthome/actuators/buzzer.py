@@ -18,20 +18,33 @@ class BUZZER:
         time.sleep(delay)
 
 
-def run_buzzer_loop(buzzer, callback, stop_event, settings, publish_event, alarm_event, system_event):
+def run_buzzer_loop(buzzer, callback, stop_event, settings, publish_event, alarm_event, system_event, alarm_clock_event):
     while True:
-        alarm_event.wait()
-        start = time.time()
-        buzzer.buzz()
-
-        while system_event.is_set():
+        if alarm_event.is_set():
+            start = time.time()
             buzzer.buzz()
 
-        end = time.time()
-        duration = end - start
-        print("Duration:", str(duration))
-        callback(duration, "CODE", settings, publish_event)
-        alarm_event.clear()
+            while system_event.is_set():
+                buzzer.buzz()
+
+            end = time.time()
+            duration = end - start
+            print("Duration:", str(duration))
+            callback(duration, "CODE", settings, publish_event)
+            alarm_event.clear()
+
+        elif alarm_clock_event.is_set():
+            start = time.time()
+            buzzer.buzz()
+
+            while alarm_clock_event.is_set():
+                buzzer.buzz()
+
+            end = time.time()
+            duration = end - start
+            print("Duration:", str(duration))
+            callback(duration, "CODE", settings, publish_event)
+            alarm_clock_event.clear()
 
         if stop_event.is_set():
             GPIO.cleanup()

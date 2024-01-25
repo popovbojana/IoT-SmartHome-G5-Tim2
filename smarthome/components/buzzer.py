@@ -69,6 +69,6 @@ def run_buzzer(settings, threads, stop_event, alarm_event, system_event, alarm_c
         from actuators.buzzer import run_buzzer_loop, BUZZER
         buzzer = BUZZER(settings['pin'])
         buzzer_thread = threading.Thread(target=run_buzzer_loop, args=(buzzer, buzzer_callback, stop_event, settings,
-                                                                       publish_event, alarm_event))
+                                                                       publish_event, alarm_event, system_event, alarm_clock_event))
         buzzer_thread.start()
         threads.append(buzzer_thread)

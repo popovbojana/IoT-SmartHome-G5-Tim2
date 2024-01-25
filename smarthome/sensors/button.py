@@ -20,10 +20,8 @@ class Button:
         return self.pushed
 
 
-def run_button_loop(button, delay, callback, stop_event, settings, publish_event, switch_event):
+def run_button_loop(button, delay, callback, stop_event, settings, publish_event):
     while True:
-        switch_event.wait()
-
         if button.read_state():
             callback("Door is unlocked", True, "BUTTON_OK", settings, publish_event)
             start_time = time.time()
@@ -36,7 +34,6 @@ def run_button_loop(button, delay, callback, stop_event, settings, publish_event
                     callback("Door is unlocked", True, "BUTTON_5_SEC", settings, publish_event)
 
         time.sleep(delay)
-        switch_event.clear()
 
         if stop_event.is_set():
             GPIO.cleanup()

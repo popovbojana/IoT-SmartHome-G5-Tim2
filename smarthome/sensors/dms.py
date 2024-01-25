@@ -30,10 +30,10 @@ class DMS:
         return None
 
 
-def run_dms_loop(dms, delay, callback, stop_event, settings, publish_event):
+def run_dms_loop(dms, delay, callback, stop_event, settings, publish_event, system_event):
     while True:
         key = dms.read_key()
-        callback(key, "DMS_OK", settings, publish_event)
+        callback(key, "DMS_OK", settings, publish_event, system_event)
         if stop_event.is_set():
             GPIO.cleanup()
             break
