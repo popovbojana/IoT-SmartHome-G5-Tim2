@@ -18,6 +18,7 @@ app = Flask(__name__)
 
 people_inside = 0
 pin_code = ['0', '0', '0', '0']
+password_list = []
 system_on = False
 alarm_on = False
 
@@ -32,9 +33,11 @@ scheduler = BackgroundScheduler()
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+
 @socketio.on('connect')
 def handle_connect():
     print('Client connected')
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -329,6 +332,7 @@ def check_and_trigger_alarms():
         alarm_clock_on = True
         send_message_ws("alarm_clock", True)
 
+
 def on_connect(client, userdata, flags, rc):
     topics = ["button", "dht", "dms", "pir", "uds", "buzzer", "diode", "gyro", "lcd", "rgb_led", "fdss", "ir",
               "alarm-clock-pi"]
@@ -408,6 +412,16 @@ def on_message(client, userdata, msg):
     elif msg.topic == "fdss":
         save_fdss_data(payload, influxdb_client)
         send_message_ws(payload["name"], payload)
+
+    elif msg.topic == "dms":
+        global password_list
+        save_fdss_data(payload, influxdb_client)
+        if payload['key'] != 'key':
+            password_list.append(payload['key'])
+            if len(password_list) == 4:
+                password_dict = {'key': password_list}
+                handle_dms(password_dict)
+                password_list = []
 
 
 def handle_influx_query(query):
